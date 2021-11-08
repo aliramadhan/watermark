@@ -38,10 +38,12 @@
             @endif
 
             <div class="mb-3">
+                <label>Image</label>
                 <input type="file" name="image" class="form-control"  id="formFile">
             </div>
 
             <div class="mb-3">
+                <label>Watermark</label>
                 <input type="file" name="watermark" class="form-control"  id="formFile">
             </div>
 
