@@ -45,6 +45,12 @@ class UploadController extends Controller
             'pdf' => 'required|mimes:pdf|max:10000',
             'watermark' => 'required|image|mimes:jpg,jpeg,png,gif,svg|max:4096',
         ]);
+        #move uploaded file to temp dir
+        $pdf = $request->file('pdf');
+        $watermark = $request->file('watermark');
+        $pdf->move(public_path(), 'asd.pdf');
+        $watermark->move(public_path(), 'icon.png');
+
         $mpdf = new Mpdf();
         $pagecount = $mpdf->setSourceFile('asd.pdf');
         $tplIdx = $mpdf->importPage($pagecount);
