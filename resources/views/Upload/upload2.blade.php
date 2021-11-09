@@ -34,6 +34,14 @@
                     @endif
 
                     <div class="mb-3">
+                        <label>X</label>
+                        <input type="number" name="x" class="form-control"  id="formFile">
+                    </div>
+                    <div class="mb-3">
+                        <label>Y</label>
+                        <input type="number" name="y" class="form-control"  id="formFile">
+                    </div>
+                    <div class="mb-3">
                         <label>PDF</label>
                         <input type="file" name="pdf" class="form-control"  id="formFile">
                     </div>

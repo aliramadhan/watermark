@@ -53,7 +53,7 @@ class UploadController extends Controller
             'icon.png',
             0.9,
             array(50,50),
-            array(140,150),
+            array($request->x,$request->y),
         );
         $mpdf->showWatermarkImage = true;
         $mpdf->Output('filename.pdf','F');

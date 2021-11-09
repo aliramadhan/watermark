@@ -49,8 +49,6 @@
             <div class="mb-3">
                 <label>Image</label>
                 <input type="file" name="image" class="form-control"  id="image" onchange="previewImage()">
-            </div>
-
             <div class="mb-3">
                 <label>Signature</label>
                 <input type="file" name="watermark" class="form-control"  id="formFile">
