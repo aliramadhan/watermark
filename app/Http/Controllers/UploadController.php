@@ -21,7 +21,7 @@ class UploadController extends Controller
         $fileName = time().'.'.$request->file('image')->getClientOriginalExtension();
 
         $image = Image::make($request->file('image')->getRealPath());
-        $watermark = Image::make($request->file('watermark')->getRealPath())->resize(100,100);
+        $watermark = Image::make($request->file('watermark')->getRealPath())->resize(200,200);
 
         /* insert watermark at bottom-right corner with 10px offset */
         $image->insert($watermark, 'bottom-right', 10, 10);
