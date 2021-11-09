@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Image;
+use Mpdf\Mpdf;
 
 class UploadController extends Controller
 {
-	public function index()
+    public function index()
     {
         return view('Upload.upload');
     }
@@ -16,6 +17,7 @@ class UploadController extends Controller
     {
         $this->validate($request, [
             'image' => 'required|image|mimes:jpg,jpeg,png,gif,svg|max:4096',
+            'watermark' => 'required|image|mimes:jpg,jpeg,png,gif,svg|max:4096',
         ]);
 
         $fileName = time().'.'.$request->file('image')->getClientOriginalExtension();
@@ -29,7 +31,31 @@ class UploadController extends Controller
         $image->save(public_path($fileName));
 
         return back()
-        	->with('success','File successfully uploaded.')
-        	->with('fileName',$fileName);         
+            ->with('success','File successfully uploaded.')
+            ->with('fileName',$fileName);         
+    }
+    public function index2()
+    {
+        return view('Upload.upload2');
+    }
+ 
+    public function imageFileUpload2(Request $request)
+    {
+        $this->validate($request, [
+            'pdf' => 'required|mimes:pdf|max:10000',
+            'watermark' => 'required|image|mimes:jpg,jpeg,png,gif,svg|max:4096',
+        ]);
+        $mpdf = new Mpdf();
+        $pagecount = $mpdf->setSourceFile('asd.pdf');
+        $tplIdx = $mpdf->importPage($pagecount);
+        $mpdf->useTemplate($tplIdx);
+        $mpdf->SetWatermarkImage(
+            '1636361363.jpg',
+            0.1,
+            array(50,50),
+            array(140,150),
+        );
+        $mpdf->showWatermarkImage = true;
+        $mpdf->Output('filename.pdf','F');
     }
 }
