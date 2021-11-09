@@ -24,4 +24,6 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
 Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'user', 'as' => 'user.'], function() {
 	Route::get('upload', [UploadController::class, 'index'])->name('index.upload');
 	Route::post('upload', [UploadController::class, 'imageFileUpload'])->name('store.upload');
+	Route::get('upload2', [UploadController::class, 'index2'])->name('index.upload2');
+	Route::post('upload2', [UploadController::class, 'imageFileUpload2'])->name('store.upload2');
 });

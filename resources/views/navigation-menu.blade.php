@@ -18,6 +18,9 @@
                     <x-jet-nav-link href="{{ route('user.index.upload') }}" :active="request()->routeIs('user.index.upload')">
                         {{ __('Upload') }}
                     </x-jet-nav-link>
+                    <x-jet-nav-link href="{{ route('user.index.upload2') }}" :active="request()->routeIs('user.index.upload2')">
+                        {{ __('Upload2') }}
+                    </x-jet-nav-link>
                 </div>
             </div>
 
