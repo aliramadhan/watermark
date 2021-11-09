@@ -50,7 +50,7 @@ class UploadController extends Controller
         $tplIdx = $mpdf->importPage($pagecount);
         $mpdf->useTemplate($tplIdx);
         $mpdf->SetWatermarkImage(
-            '1636361363.jpg',
+            'icon.png',
             0.1,
             array(50,50),
             array(140,150),
