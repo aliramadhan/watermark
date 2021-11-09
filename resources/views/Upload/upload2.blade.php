@@ -16,6 +16,11 @@
                     <div class="alert alert-success">
                         <strong>{{ $message }}</strong>
                     </div>
+
+                    <div class="col-md-12 mb-3 text-center">
+                        <strong>Manipulated PDF:</strong><br />
+                        <embed src="../filename.pdf" width="500" height="375" type="application/pdf">
+                    </div>
                     @endif
 
                     @if (count($errors) > 0)

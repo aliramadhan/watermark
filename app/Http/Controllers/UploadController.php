@@ -51,11 +51,13 @@ class UploadController extends Controller
         $mpdf->useTemplate($tplIdx);
         $mpdf->SetWatermarkImage(
             'icon.png',
-            0.1,
+            0.9,
             array(50,50),
             array(140,150),
         );
         $mpdf->showWatermarkImage = true;
         $mpdf->Output('filename.pdf','F');
+        return back()
+            ->with('success','File successfully uploaded.');
     }
 }
