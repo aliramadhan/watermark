@@ -35,20 +35,28 @@
 
                     <div class="mb-3">
                         <label>X</label>
-                        <input type="number" name="x" class="form-control"  id="formFile">
+                        <input type="number" name="x" class="form-control"  id="formFile" value="{{old('x')}}">
                     </div>
                     <div class="mb-3">
                         <label>Y</label>
-                        <input type="number" name="y" class="form-control"  id="formFile">
+                        <input type="number" name="y" class="form-control"  id="formFile" value="{{old('y')}}">
                     </div>
                     <div class="mb-3">
                         <label>PDF</label>
-                        <input type="file" name="pdf" class="form-control"  id="formFile">
+                        <input type="file" name="pdf" class="form-control"  id="formFile" value="{{old('pdf')}}">
                     </div>
 
                     <div class="mb-3">
                         <label>Watermark</label>
-                        <input type="file" name="watermark" class="form-control"  id="formFile">
+                        <input type="file" name="watermark" class="form-control"  id="formFile" value="{{old('watermark')}}">
+                    </div>
+                    <div class="mb-3">
+                        <label>Width</label>
+                        <input type="number" name="widthWatermark" class="form-control"  id="formFile" value="{{old('widthWatermark')}}">
+                    </div>
+                    <div class="mb-3">
+                        <label>Height</label>
+                        <input type="number" name="heightWatermark" class="form-control"  id="formFile" value="{{old('heightWatermark')}}">
                     </div>
 
                     <div class="d-grid mt-4">

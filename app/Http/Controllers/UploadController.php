@@ -53,17 +53,22 @@ class UploadController extends Controller
 
         $mpdf = new Mpdf();
         $pagecount = $mpdf->setSourceFile('asd.pdf');
-        $tplIdx = $mpdf->importPage($pagecount);
-        $mpdf->useTemplate($tplIdx);
-        $mpdf->SetWatermarkImage(
-            'icon.png',
-            0.9,
-            array(50,50),
-            array($request->x,$request->y),
-        );
-        $mpdf->showWatermarkImage = true;
+        for ($i=1; $i<=$pagecount; $i++) {
+            $import_page = $mpdf->ImportPage($i);
+            $mpdf->UseTemplate($import_page);
+            $mpdf->SetWatermarkImage(
+                'icon.png',
+                0.9,
+                array($request->widthWatermark,$request->heightWatermark),
+                array($request->x,$request->y),
+            );
+            $mpdf->showWatermarkImage = true;
+
+            if ($i < $pagecount)
+                $mpdf->AddPage();
+        }
         $mpdf->Output('filename.pdf','F');
-        return back()
+        return back()->withInput()
             ->with('success','File successfully uploaded.');
     }
 }
