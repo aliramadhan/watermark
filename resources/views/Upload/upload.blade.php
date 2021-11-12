@@ -77,7 +77,7 @@
        imgPreview.src = oFReader.target.result;
     }
 }
-
+/*
 function printMousePos(event) {
   document.body.textContent =
     "clientX: " + event.clientX +
@@ -85,7 +85,7 @@ function printMousePos(event) {
 }
 
 document.addEventListener("click", printMousePos);
-
+*/
 </script>
 
 </html>
