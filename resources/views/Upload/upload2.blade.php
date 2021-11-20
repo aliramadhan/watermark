@@ -87,7 +87,12 @@
                     <div class="col-md-12 mb-3 text-center">
                         <strong>Manipulated PDF:</strong><br />
                         <div id="divEmbed">
-                            <embed id='embedPDF' src='../temp/pdf_{{auth()->user()->id}}.pdf' width='500' height='375' type='application/pdf'>
+                            @if(file_exists('temp/output_pdf'.auth()->user()->id.'.pdf'))
+                                <embed id='embedPDF' src='../temp/output_pdf{{auth()->user()->id}}.pdf' width='1199' height='600' type='application/pdf'>
+                            @else
+                                <embed id='embedPDF' src='../temp/output_pdf{{auth()->user()->id}}.pdf' width='1199' height='600' type='application/pdf'>
+
+                            @endif
                         </div>
                     </div>
                     @endif
