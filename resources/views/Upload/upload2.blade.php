@@ -63,6 +63,10 @@
                     <label>Height</label>
                     <input type="number" name="heightWatermark" class="form-control"  id="formHeight" value="{{old('heightWatermark')}}">
                 </div>
+                <div class="mb-3">
+                    <label>page set</label>
+                    <input type="text" name="pages" class="form-control"  id="formPages" value="{{old('pages')}}">
+                </div>
 
                 <div class="d-grid mt-4">
                     <button type="submit" name="submit" class="btn btn-primary" id="edit">
@@ -83,7 +87,7 @@
                     <div class="col-md-12 mb-3 text-center">
                         <strong>Manipulated PDF:</strong><br />
                         <div id="divEmbed">
-                            <embed id='embedPDF' src='../temp/output_pdf{{auth()->user()->id}}.pdf' width='500' height='375' type='application/pdf'>
+                            <embed id='embedPDF' src='../temp/pdf_{{auth()->user()->id}}.pdf' width='500' height='375' type='application/pdf'>
                         </div>
                     </div>
                     @endif
@@ -122,6 +126,7 @@
                   method: 'post',
                   data: {
                     _token: "{{ csrf_token() }}",
+                     pages: jQuery('#formPages').val(),
                      opacity: jQuery('#formOpacity').val(),
                      x: jQuery('#formX').val(),
                      y: jQuery('#formY').val(),

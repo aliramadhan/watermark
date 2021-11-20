@@ -40,8 +40,8 @@ class UploadController extends Controller
     {
         #delete file if any at temp
         /*
-        if (file_exists(public_path('temp/pdf_'.auth()->user()->id.'.pdf')) && !Session::has('success')) {
-            File::delete(public_path('temp/pdf_'.auth()->user()->id.'.pdf'));
+        if (file_exists(public_path('temp/output_pdf'.auth()->user()->id.'.pdf')) && !Session::has('success')) {
+            File::delete(public_path('temp/output_pdf'.auth()->user()->id.'.pdf'));
         }
         if (file_exists(public_path('temp/watermark_'.auth()->user()->id.'.png'))&& !Session::has('success')) {
             File::delete(public_path('temp/watermark_'.auth()->user()->id.'.png'));
@@ -52,6 +52,9 @@ class UploadController extends Controller
     {
         $mpdf = new Mpdf();
         $pagecount = $mpdf->setSourceFile('temp/pdf_'.auth()->user()->id.'.pdf');
+        if (strlen($request->pages) > 0) {
+            $pageWatermarked = explode(",", $request->pages);
+        }
         if ($request->opacity) {
             $request->opacity = $request->opacity/100;
         }
@@ -64,7 +67,14 @@ class UploadController extends Controller
                 array($request->width,$request->height),
                 array($request->x,$request->y),
             );
-            $mpdf->showWatermarkImage = true;
+            if (strlen($request->pages) > 0) {
+                if (in_array($i, $pageWatermarked)) {
+                    $mpdf->showWatermarkImage = true;
+                }
+                else{
+                    $mpdf->showWatermarkImage = false;
+                }
+            }
 
             if ($i < $pagecount)
                 $mpdf->AddPage();
