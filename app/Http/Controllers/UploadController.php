@@ -80,7 +80,7 @@ class UploadController extends Controller
                 $mpdf->AddPage();
         }
         $mpdf->Output('temp/output_pdf'.auth()->user()->id.'.pdf','F');
-        $embedPDF = "<embed id='embedPDF' src='../temp/output_pdf".auth()->user()->id.".pdf' width='500' height='375' type='application/pdf'>";
+        $embedPDF = "<embed id='embedPDF' src='../temp/output_pdf".auth()->user()->id.".pdf' width='100%' height='1100px' type='application/pdf'>";
         return response()->json(['embedPDF'=> $embedPDF]);
     }
     public function imageFileUpload2(Request $request)
