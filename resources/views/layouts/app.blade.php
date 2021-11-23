@@ -29,7 +29,7 @@
     <body class="antialiased">
         <x-jet-banner />
 
-        <div class="min-h-screen  bg-gradient-to-b from-gray-500  to-indigo-400">
+        <div class="min-h-screen  bg-gradient-to-b from-gray-100  to-indigo-400">
             @livewire('navigation-menu')
 
             <!-- Page Heading -->
