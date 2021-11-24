@@ -54,7 +54,7 @@
             <h2 class="mb-8 font-semibold text-xl text-gray-700 tracking-wide mt-5">Signature Settings</h2>    
             <div class="mb-4 flex flex-col">
                 <label class="text-gray-600"><i class="fas fa-file-alt mr-1.5"></i> Select Page Set</label>
-                <input type="number" name="pages" placeholder="1, 2, 3, 4 .. - 100" class="bg-gray-100 hover:border-indigo-400 duration-300 rounded-lg border-gray-200 py-1.5 px-3.5 mt-1"  id="formPages" value="{{old('pages')}}">
+                <input type="text" name="pages" placeholder="1, 2, 3, 4 .. - 100" class="bg-gray-100 hover:border-indigo-400 duration-300 rounded-lg border-gray-200 py-1.5 px-3.5 mt-1"  id="formPages" value="{{old('pages')}}">
             </div>       
             <div class="mb-4 flex flex-col">
                 <label class="text-gray-600"><i class="far fa-sticky-note mr-1.5"></i>Opacity (Ketebalan)</label>
@@ -132,13 +132,13 @@
         <div class="shadow-lg  text-center ">
 
             <div id="divEmbed">
-                @if(file_exists('temp/pdf_'.auth()->user()->id.'.pdf'))
-                <embed id='embedPDF' class="w-full" src='../temp/pdf_{{auth()->user()->id}}.pdf'  width="100%" height='600' type='application/pdf'>
-                    @else
-                    <embed id='embedPDF' class="w-full" src='../temp/pdf_{{auth()->user()->id}}.pdf' width="100%"  height='600' type='application/pdf'>
+                @if(file_exists('temp/output_pdf'.auth()->user()->id.'.pdf'))
+                <embed id='embedPDF' class="w-full" src='../temp/output_pdf{{auth()->user()->id}}.pdf'  width="100%" height='600' type='application/pdf'>
+                @else
+                <embed id='embedPDF' class="w-full" src='../temp/pdf_{{auth()->user()->id}}.pdf' width="100%"  height='600' type='application/pdf'>
 
-                        @endif
-                    </div>
+                    @endif
+                </div>
                 </div>
                 @endif
 
