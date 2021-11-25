@@ -117,9 +117,9 @@
             <label class="col-span-2 font-semibold text-gray-700 mb-2 text-base"><i class="fas fa-book mr-1.5"></i>File Information</label>
 
             <label class="text-gray-500">File Name</label>
-            <label class="text-gray-500 truncate">: {{$queue->file_name}}</label>
+            <label class="text-gray-500 truncate">: {{($queue->file_name ?? '$queue->file_name')}}</label>
             <label class="text-gray-500">File Size</label>
-            <label class="text-gray-500">: {{$queue->fileSize}}</label>
+            <label class="text-gray-500">: {{($queue->fileSize ?? '$queue->fileSize')}}</label>
             <label class="text-gray-500">Total Page</label>
             <label class="text-gray-500">: {{$queue->total_page}}</label>
             <label class="text-gray-500">Upload Date</label>
@@ -139,6 +139,10 @@
             <button class="space-y-1 bg-blue-500 hover:bg-blue-600 duration-300 w-full" id="reset">
                 <i class="fas fa-undo fa-xl pb-2"></i><br>
                 <label class="tracking-wider"> Reset</label>
+            </button>
+              <button class="space-y-1 bg-blue-500 hover:bg-blue-600 duration-300 w-full" >
+                <i class="fas fa-redo fa-xl pb-2"></i><br>
+                <label class="tracking-wider"> Redo</label>
             </button>
 
         </div>
@@ -207,13 +211,14 @@
 
         @endif
     </div>
-
+   @if(file_exists('temp/pdf_'.auth()->user()->id.'.pdf'))
     <div class="flex space-x-6 items-center justify-end bg-gradient-to-l from-gray-500  px-7 py-4 pb-5 shadow-xl  right-0 bottom-0 w-full absolute  text-right ">
      <button class="duration-300 bg-blue-500 hover:bg-blue-600 text-white py-2.5 px-5 text-xl rounded-md font-semibold shadow-lg tracking-wider sticky">
         <i class="fas fa-save"></i> Save</button>
         <button class="duration-300 bg-yellow-500 hover:bg-yellow-400 text-white py-2.5 px-5 text-xl rounded-md font-semibold shadow-lg tracking-wider sticky">
             <i class="fas fa-file-download mr-4"></i> Export</button>
         </div>
+        @endif
 
     </div>
 
