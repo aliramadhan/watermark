@@ -1,6 +1,5 @@
 <x-app-layout>
-
-    <div class="w-max-screen mx-auto  overflow-y-hidden">
+ <div class="w-max-screen mx-auto  overflow-y-hidden">
       <div class="relative flex space-x-4 max-h-full">
         @if(!file_exists('temp/pdf_'.auth()->user()->id.'.pdf'))
         
@@ -102,14 +101,14 @@
             <label class="col-span-2 font-semibold text-gray-700 mb-2 text-base"><i class="fas fa-book mr-1.5"></i>File Information</label>
 
             <label class="text-gray-500">File Name</label>
-            <label class="text-gray-500 truncate">: Filename.pdf</label>
+            <label class="text-gray-500 truncate">: {{$queue->file_name}}</label>
             <label class="text-gray-500">File Size</label>
-            <label class="text-gray-500">: 12 Mb</label>
+            <label class="text-gray-500">: {{$queue->fileSize}}</label>
             <label class="text-gray-500">Total Page</label>
-            <label class="text-gray-500">: 18</label>
+            <label class="text-gray-500">: {{$queue->total_page}}</label>
             <label class="text-gray-500">Upload Date</label>
-            <label class="text-gray-500 truncate">: Selasa, 23 Nov 2021</label>
-            <label class="text-gray-500">Editing By</label>
+            <label class="text-gray-500 truncate">: {{Carbon\Carbon::parse($queue->created_at)->format('l F Y')}}</label>
+            <label class="text-gray-500">Uploaded By</label>
             <label class="text-gray-500 truncate">: {{Auth::user()->name}}</label>
 
         </div>
@@ -129,7 +128,7 @@
         </div>
 
         <button type="submit" name="submit" class="bg-white text-blue-500 px-4 w-full mx-auto  py-2 my-2 rounded-lg font-semibold hover:bg-blue-500 hover:text-white duration-300 shadow-lg tracking-wider" id="edit">
-            Save Signature
+            Apply Signature
         </button>
     </div>
 </div>
@@ -148,8 +147,11 @@
     </div>
 
     @endif
-     <label class="text-4xl text-gray-700 font-semibold font-semibold">Final Result</label>
+    <form method="POST" action="{{route('user.delete.upload2',$queue->id)}}">
+      @csrf
+      @method('DELETE')
     <button class="text-white bg-red-500  px-4 py-2 rounded-lg text-xl font-semibold tracking-wider hover:bg-red-600"> <i class="fas fa-trash mr-2"></i> Delete</button>
+    </form>
 </div>
 <div class="shadow-lg  text-center ">
 
