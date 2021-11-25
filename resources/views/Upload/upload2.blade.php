@@ -1,10 +1,10 @@
 <x-app-layout>
 
-    <div class="w-max-screen mx-auto ">
-      <div class="relative flex space-x-4 overflow-hidden  max-h-full">
+    <div class="w-max-screen mx-auto  overflow-y-hidden">
+      <div class="relative flex space-x-4 max-h-full">
         @if(!file_exists('temp/pdf_'.auth()->user()->id.'.pdf'))
         
-        <div class="flex flex-col h-100  justify-between z-10 lg:w-60 xl:w-72 sticky bg-white pb-4  px-6 shadow-xl  tracking-wide">   
+        <div class="flex flex-col h-screen  justify-between z-10 lg:w-60 xl:w-72 sticky bg-white pb-4  px-6 shadow-xl  tracking-wide">   
             <div>
                 <form action="{{route('user.store.upload2')}}" enctype="multipart/form-data" method="post">
                     @csrf
@@ -51,7 +51,7 @@
            </div>
        </div>
 
-       <div class="relative w-full p-8 my-3 h-max-screen  flex flex-row space-x-4">
+       <div class="relative w-full p-8 my-3 h-5/6  flex flex-row space-x-4">
          <div class="shadow-lg w-4/12 text-center ">
            <canvas id="pdfViewer" class="w-full mx-auto h-full"></canvas>
        </div>
@@ -141,7 +141,7 @@
 
     @if(file_exists('temp/pdf_'.auth()->user()->id.'.pdf'))
 
-    <div class=" flex flex-row justify-between items-center pb-2">
+    <div class=" flex flex-row justify-between items-center pb-2 text-green-500">
        @if ($message = Session::get('success'))
        <div class="alert alert-success">
         <strong>{{ $message }}</strong>
@@ -149,7 +149,7 @@
 
     @endif
      <label class="text-4xl text-gray-700 font-semibold font-semibold">Final Result</label>
-    <button class="text-white bg-red-500  px-4 py-2 rounded-lg text-xl font-semibold tracking-wider hover:bg-red-600">Delete</button>
+    <button class="text-white bg-red-500  px-4 py-2 rounded-lg text-xl font-semibold tracking-wider hover:bg-red-600"> <i class="fas fa-trash mr-2"></i> Delete</button>
 </div>
 <div class="shadow-lg  text-center ">
 
