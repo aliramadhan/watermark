@@ -7,6 +7,7 @@ use Image;
 use Mpdf\Mpdf;
 use Illuminate\Support\Facades\File; 
 use Session;
+use App\Models\QueueSignature;
 
 class UploadController extends Controller
 {
@@ -14,7 +15,7 @@ class UploadController extends Controller
     {
         return view('Upload.upload');
     }
- 
+    
     public function imageFileUpload(Request $request)
     {
         $this->validate($request, [
@@ -46,7 +47,12 @@ class UploadController extends Controller
         if (file_exists(public_path('temp/watermark_'.auth()->user()->id.'.png'))&& !Session::has('success')) {
             File::delete(public_path('temp/watermark_'.auth()->user()->id.'.png'));
         }*/
-        return view('Upload.upload2');
+        $user = auth()->user();
+        $queue = QueueSignature::where('user_id',$user->id)->first();
+        if ($queue != null) {
+            $queue->fileSize = $this->formatBytes($queue->file_size);
+        }
+        return view('Upload.upload2',compact('user','queue'));
     }
     public function editWatermarkPDF(Request $request)
     {
@@ -89,14 +95,49 @@ class UploadController extends Controller
             'pdf' => 'required|mimes:pdf|max:10000',
             'watermark' => 'required|image|mimes:jpg,jpeg,png,gif,svg|max:4096',
         ]);
+        $user = auth()->user();
         $pdf = $request->file('pdf');
         $watermark = $request->file('watermark');
+        $getSize = $pdf->getSize();
 
         #move uploaded file to temp dir
-        $pdf->move(public_path('temp/'), 'pdf_'.auth()->user()->id.'.pdf');
-        $watermark->move(public_path('temp/'), 'watermark_'.auth()->user()->id.'.png');
+        $pdf->move(public_path('temp/'), 'pdf_'.$user->id.'.pdf');
+        $watermark->move(public_path('temp/'), 'watermark_'.$user->id.'.png');
+        #get total page
+        $mpdf = new Mpdf();
+        $pagecount = $mpdf->setSourceFile('temp/pdf_'.auth()->user()->id.'.pdf');
+        #inser to database
+        $queu = QueueSignature::updateOrCreate([
+            'user_id' => $user->id
+        ],[
+            'file_path' => public_path('temp/'), 'pdf_'.$user->id.'.pdf',
+            'file_name' => $pdf->getClientOriginalName(),
+            'file_size' => $getSize,
+            'total_page' => $pagecount,
+        ]);
 
         return back()->withInput()
             ->with('success','File successfully uploaded.');
+    }
+    public function deleteQueueSignature(QueueSignature $queue)
+    {
+        $user = auth()->user();
+        $pdf = public_path('temp/pdf_'.$user->id.'.pdf');
+        $watermark = public_path('temp/watermark_'.$user->id.'.pdf');
+        $output_pdf = public_path('temp/output_pdf'.$user->id.'.png');
+        if (File::exists($pdf)) {
+            //File::delete($image_path);
+            unlink($pdf);
+            unlink($watermark);
+            unlink($output_pdf);
+        }
+        return redirect()->back()->with('success','Delete berhasil.');
+    }
+    public function formatBytes($size, $precision = 2)
+    {
+        $base = log($size, 1024);
+        $suffixes = array('', 'K', 'M', 'G', 'T');   
+
+        return round(pow(1024, $base - floor($base)), $precision) .' '. $suffixes[floor($base)];
     }
 }
