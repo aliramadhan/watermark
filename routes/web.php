@@ -28,4 +28,5 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'user', 'as' => 'use
 	Route::post('upload2', [UploadController::class, 'imageFileUpload2'])->name('store.upload2');
 	Route::delete('upload2/{queue}/delete', [UploadController::class, 'deleteQueueSignature'])->name('delete.upload2');
 	Route::post('edit-watermark-pdf', [UploadController::class, 'editWatermarkPDF'])->name('edit.watermark.pdf');
+	Route::post('reset-watermark-pdf', [UploadController::class, 'resetWatermarkPDF'])->name('reset.watermark.pdf');
 });

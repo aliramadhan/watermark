@@ -89,6 +89,20 @@ class UploadController extends Controller
         $embedPDF = "<embed id='embedPDF' src='../temp/output_pdf".auth()->user()->id.".pdf' width='100%' height='600px' type='application/pdf'>";
         return response()->json(['embedPDF'=> $embedPDF]);
     }
+    public function resetWatermarkPDF(Request $request)
+    {
+        $mpdf = new Mpdf();
+        $pagecount = $mpdf->setSourceFile('temp/pdf_'.auth()->user()->id.'.pdf');
+        for ($i=1; $i<=$pagecount; $i++) {
+            $import_page = $mpdf->ImportPage($i);
+            $mpdf->UseTemplate($import_page);
+            if ($i < $pagecount)
+                $mpdf->AddPage();
+        }
+        $mpdf->Output('temp/output_pdf'.auth()->user()->id.'.pdf','F');
+        $embedPDF = "<embed id='embedPDF' src='../temp/output_pdf".auth()->user()->id.".pdf' width='100%' height='600px' type='application/pdf'>";
+        return response()->json(['embedPDF'=> $embedPDF]);
+    }
     public function imageFileUpload2(Request $request)
     {
         $this->validate($request, [
@@ -110,7 +124,7 @@ class UploadController extends Controller
         $queu = QueueSignature::updateOrCreate([
             'user_id' => $user->id
         ],[
-            'file_path' => public_path('temp/'), 'pdf_'.$user->id.'.pdf',
+            'file_path' => public_path('temp/pdf_'.$user->id.'.pdf'),
             'file_name' => $pdf->getClientOriginalName(),
             'file_size' => $getSize,
             'total_page' => $pagecount,
@@ -126,6 +140,7 @@ class UploadController extends Controller
         $watermark = public_path('temp/watermark_'.$user->id.'.pdf');
         $output_pdf = public_path('temp/output_pdf'.$user->id.'.png');
         if (File::exists($pdf)) {
+            return dd($pdf);
             //File::delete($image_path);
             unlink($pdf);
             unlink($watermark);

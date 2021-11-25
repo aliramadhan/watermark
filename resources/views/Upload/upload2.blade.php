@@ -1,5 +1,5 @@
 <x-app-layout>
-    
+
     <div class="w-max-screen mx-auto ">
       <div class="relative flex space-x-4 overflow-hidden  max-h-full">
         @if(!file_exists('temp/pdf_'.auth()->user()->id.'.pdf'))
@@ -117,13 +117,9 @@
     </div>
     <div class="mt-2  -mx-6 -mb-4   bg-blue-400 py-3 px-6">
         <div class="grid grid-cols-2 w-100  border-b divide-x divide-gray-300 broder-gray-300  -mt-3 -mx-6 mb-4 h-20 text-gray-50">
-            <button class="space-y-1 bg-blue-500 hover:bg-blue-600 duration-300 w-full">
+            <button class="space-y-1 bg-blue-500 hover:bg-blue-600 duration-300 w-full" id="reset">
                 <i class="fas fa-undo fa-xl pb-2"></i><br>
-                <label class="tracking-wider"> Undo</label>
-            </button>
-            <button class="space-y-1 bg-blue-500 hover:bg-blue-600 duration-300 w-full">
-                <i class="fas fa-redo fa-xl pb-2"></i><br>
-                <label class="tracking-wider"> Redo</label>
+                <label class="tracking-wider"> Reset</label>
             </button>
 
         </div>
@@ -271,12 +267,12 @@ $("#myPdf").on("change", function(e){
    jQuery(document).ready(function(){
     jQuery('#edit').click(function(e){
      e.preventDefault();
-     $.ajaxSetup({
-      headers: {
-          'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-      }
-  });
-     jQuery.ajax({
+      $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+        }
+      });
+      jQuery.ajax({
       url: "{{ route('user.edit.watermark.pdf') }}",
       method: 'post',
       data: {
@@ -287,11 +283,34 @@ $("#myPdf").on("change", function(e){
         y: jQuery('#formY').val(),
         width: jQuery('#formWidht').val(),
         height: jQuery('#formHeight').val(),
-    },
-    success: function(result){
+      },
+      success: function(result){
         $("#divEmbed").html(result.embedPDF);
-    }});
- });
-});
+      }});
+    });
+    jQuery('#reset').click(function(e){
+     e.preventDefault();
+      $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+        }
+      });
+      jQuery.ajax({
+      url: "{{ route('user.edit.watermark.pdf') }}",
+      method: 'post',
+      data: {
+        _token: "{{ csrf_token() }}",
+        pages: jQuery('#formPages').val(),
+        opacity: jQuery('#formOpacity').val(),
+        x: jQuery('#formX').val(),
+        y: jQuery('#formY').val(),
+        width: jQuery('#formWidht').val(),
+        height: jQuery('#formHeight').val(),
+      },
+      success: function(result){
+        $("#divEmbed").html(result.embedPDF);
+      }});
+    });
+  });
 </script>
 </x-app-layout>
