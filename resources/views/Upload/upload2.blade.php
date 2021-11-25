@@ -1,7 +1,7 @@
 <x-app-layout>
 
-    <div class="w-max-screen mx-auto ">
-      <div class="relative flex space-x-4 overflow-hidden  max-h-full">
+    <div class="w-max-screen mx-auto overflow-hidden">
+      <div class="relative flex space-x-4 max-h-full">
         @if(!file_exists('temp/pdf_'.auth()->user()->id.'.pdf'))
         
         <div class="flex flex-col h-screen  justify-between z-10 lg:w-60 xl:w-72 sticky bg-white pb-4  px-6 shadow-xl  tracking-wide">   
