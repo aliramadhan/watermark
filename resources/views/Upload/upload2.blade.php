@@ -62,8 +62,11 @@
 @endif
 @if(file_exists('temp/pdf_'.auth()->user()->id.'.pdf'))
 
+<div x-data="{ open: true }" class="h-100 flex ">
+        <button @click="open = ! open" class="fixed bg-white rounded-full h-12 w-12 z-10 left-12 top-24  hover:bg-blue-400 hover:text-white duration-300 shadow-lg"><i class="fas fa-angle-right fa-xl"></i></button> 
 
-<div class="flex flex-col h-100 justify-between z-10 lg:w-60 xl:w-72 sticky bg-white pb-4  px-6 shadow-xl  tracking-wide">   
+<div class="flex flex-col h-100 justify-between z-10 lg:w-60 xl:w-72 sticky bg-white pb-4  px-6 shadow-xl  tracking-wide relative"   x-show="open" x-transition>  
+     <button @click="open = ! open" class="absolute text-blue-600 bg-white rounded-full h-12 w-12 z-20 -right-6 top-10 border hover:bg-blue-400 hover:text-white duration-300"><i class="fas fa-angle-left fa-xl"></i></button> 
     <div>
         <h2 class="mb-8 font-semibold text-xl text-gray-700 tracking-wide mt-5">Signature Settings</h2>    
         <div class="mb-4 flex flex-col">
@@ -110,7 +113,11 @@
             <label class="text-gray-500 truncate">: {{Carbon\Carbon::parse($queue->created_at)->format('l F Y')}}</label>
             <label class="text-gray-500">Uploaded By</label>
             <label class="text-gray-500 truncate">: {{Auth::user()->name}}</label>
-
+            <div class="col-span-2 border-b pt-2 mb-2"></div>
+            <label class="text-gray-700">Editing By</label>
+            <label class="text-gray-700 truncate">: {{Auth::user()->name}}</label>
+            <label class="text-gray-700">Last Update</label>
+            <label class="text-gray-700 truncate">: {{Carbon\Carbon::parse($queue->created_at)->format('l F Y')}}</label>
         </div>
 
     </div>
@@ -132,7 +139,7 @@
         </button>
     </div>
 </div>
-
+</div>
 
 
 <div class="relative w-full p-8 mb-3 mt-0 h-full pb-32">
@@ -147,7 +154,7 @@
     </div>
 
     @endif
-    <form method="POST" action="{{route('user.delete.upload2',$queue->id)}}">
+    <form method="POST" action="{{route('user.delete.upload2',$queue->id)}}" class="justify-end flex flex-row w-full">
       @csrf
       @method('DELETE')
     <button class="text-white bg-red-500  px-4 py-2 rounded-lg text-xl font-semibold tracking-wider hover:bg-red-600"> <i class="fas fa-trash mr-2"></i> Delete</button>

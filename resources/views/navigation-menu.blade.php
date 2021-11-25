@@ -15,12 +15,10 @@
                     <x-jet-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-jet-nav-link>
-                    <x-jet-nav-link href="{{ route('user.index.upload') }}" :active="request()->routeIs('user.index.upload')">
+                    <x-jet-nav-link k href="{{ route('user.index.upload2') }}" :active="request()->routeIs('user.index.upload2')">
                         {{ __('Upload') }}
                     </x-jet-nav-link>
-                    <x-jet-nav-link href="{{ route('user.index.upload2') }}" :active="request()->routeIs('user.index.upload2')">
-                        {{ __('Upload2') }}
-                    </x-jet-nav-link>
+                   
                 </div>
             </div>
 
