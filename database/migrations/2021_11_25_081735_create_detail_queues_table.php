@@ -16,6 +16,7 @@ class CreateDetailQueuesTable extends Migration
         Schema::create('detail_queues', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('queue_signature_id');
+            $table->integer('page');
             $table->string('file_path');
             $table->integer('x');
             $table->integer('y');

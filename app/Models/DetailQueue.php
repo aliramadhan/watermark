@@ -10,6 +10,7 @@ class DetailQueue extends Model
     use HasFactory;
     protected $fillable = [
         'queue_signature_id',
+        'page',
         'file_path',
         'x',
         'y',
@@ -18,4 +19,8 @@ class DetailQueue extends Model
         'opacity',
         'is_watermarked',
     ];
+    public function queue()
+    {
+        return $this->belongsTo(QueueSignature::class);
+    }
 }

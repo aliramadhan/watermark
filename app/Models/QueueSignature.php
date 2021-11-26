@@ -15,4 +15,8 @@ class QueueSignature extends Model
         'file_size',
         'total_page',
     ];
+    public function details()
+    {
+        return $this->hasMany(DetailQueue::class, 'queue_signature_id', 'id');
+    }
 }
