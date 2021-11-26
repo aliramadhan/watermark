@@ -163,7 +163,7 @@ class UploadController extends Controller
         $queue = QueueSignature::updateOrCreate([
             'user_id' => $user->id
         ],[
-            'file_path' => public_path('temp/pdf_'.$user->id.'.pdf'),
+            'file_path' => 'temp/pdf_'.$user->id.'.pdf',
             'file_name' => $pdf->getClientOriginalName(),
             'file_size' => $getSize,
             'total_page' => $pagecount,
@@ -195,14 +195,17 @@ class UploadController extends Controller
     public function deleteQueueSignature(QueueSignature $queue)
     {
         $user = auth()->user();
-        $pdf = public_path('temp/pdf_'.$user->id.'.pdf');
+        $queue = QueueSignature::where('user_id',$user->id)->first();
         $watermark = public_path('temp/watermark_'.$user->id.'.png');
-        $output_pdf = public_path('temp/output_pdf'.$user->id.'.pdf');
-        if (File::exists($pdf)) {
+        if ($queue != null) {
+            foreach ($queue->details as $detail) {
+                unlink($detail->file_path);
+                $detail->delete();
+            }
             //File::delete($image_path);
-            unlink($pdf);
+            unlink($queue->file_path);
             unlink($watermark);
-            unlink($output_pdf);
+            $queue->delete();
         }
         return redirect()->back()->with('success','Delete berhasil.');
     }
