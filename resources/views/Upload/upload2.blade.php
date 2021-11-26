@@ -125,7 +125,6 @@
         <div class="shadow-lg  text-center ">
           <div id="divEmbed">
             @foreach($queue->details as $detail)
-              <input type="radio" id="page" name="select_page" value="{{$detail->page}}">
               <embed id='embedPDF' class="w-full" src='../{{$detail->file_path}}' width="100%"  height='600' type='application/pdf'>
             @endforeach
           </div>
