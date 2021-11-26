@@ -123,9 +123,9 @@
           </form>
         </div>
         <div class="shadow-lg  text-center ">
-          <div id="divEmbed">
+          <div id="divEmbed" class="flex flex-row overflow-x-auto">
             @foreach($queue->details as $detail)
-              <embed id='embedPDF' class="w-full" src='../{{$detail->file_path}}' width="100%"  height='600' type='application/pdf'>
+              <embed id='embedPDF' class="w-full h-screen" src='../{{$detail->file_path}}' width="100%"  height='700' type='application/pdf'>
             @endforeach
           </div>
         </div>
