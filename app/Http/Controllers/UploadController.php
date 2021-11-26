@@ -172,7 +172,7 @@ class UploadController extends Controller
         #convert per page to new pdf file
         for ($i=1; $i<=$pagecount; $i++) {
             $new_mpdf = new Mpdf();
-            $new_mpdf->setSourceFile('temp/pdf_'.auth()->user()->id.'.pdf');
+            $new_mpdf->setSourceFile('temp/pdf_'.$user->id.'.pdf');
             $import_page = $new_mpdf->ImportPage($i);
             $new_mpdf->UseTemplate($import_page);
             $new_mpdf->Output('temp/detail_pdf_'.$i.'.pdf','F');
@@ -208,6 +208,21 @@ class UploadController extends Controller
             $queue->delete();
         }
         return redirect()->back()->with('success','Delete berhasil.');
+    }
+    public function exportSignature()
+    {
+        $user = auth()->user();
+        $queue = QueueSignature::where('user_id',$user->id)->first();
+        $mpdf = new Mpdf();
+        $pagecount = $mpdf->setSourceFile($queue->file_path);
+        foreach ($queue->details as $detail) {
+            $new_mpdf = new Mpdf();
+            $new_mpdf->setSourceFile($detail->file_path);
+            $import_page = $new_mpdf->ImportPage(1);
+            $mpdf->UseTemplate($import_page);
+            $mpdf->AddPage();
+        }
+        $mpdf->Output('temp/download'.$user->id.'.pdf','F');
     }
     public function formatBytes($size, $precision = 2)
     {
