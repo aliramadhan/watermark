@@ -143,8 +143,8 @@
       <div class="flex space-x-6 items-center justify-end bg-gradient-to-l from-gray-500  px-7 py-4 pb-5 shadow-xl  right-0 bottom-0 w-full absolute  text-right ">
         <button class="duration-300 bg-blue-500 hover:bg-blue-600 text-white py-2.5 px-5 text-xl rounded-md font-semibold shadow-lg tracking-wider sticky">
         <i class="fas fa-save"></i> Save</button>
-        <button class="duration-300 bg-yellow-500 hover:bg-yellow-400 text-white py-2.5 px-5 text-xl rounded-md font-semibold shadow-lg tracking-wider sticky">
-          <i class="fas fa-file-download mr-4"></i> Export</button>
+        <a class="duration-300 bg-yellow-500 hover:bg-yellow-400 text-white py-2.5 px-5 text-xl rounded-md font-semibold shadow-lg tracking-wider sticky" href="{{route('user.download.watermark.pdf')}}">
+          <i class="fas fa-file-download mr-4"></i> Export</a>
       </div>
     @endif
     </div>
