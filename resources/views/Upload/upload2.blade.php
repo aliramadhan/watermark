@@ -77,12 +77,11 @@
             <label class="font-semibold text-lg tracking-wide text-gray-700 pb-2">Select from last upload</label>
 
             <div class="grid grid-cols-4 gap-4 bg-gray-100 rounded-lg p-5 h-72 overflow-y-auto">
-                @for($i=0; $i < 20; $i++) 
-
-                <label class="inline-flex bg-cover  bg-no-repeat w-32 h-28 hover:bg-blue-500" style="background-image: url('https://asset.kompas.com/crops/kx8WMDhQS8wiKodf0fV8-vrJRXU=/0x0:1000x667/750x500/data/photo/2020/02/12/5e43ee472fd72.jpg');"> 
+                @foreach($signature as $item)
+                <label class="inline-flex bg-cover  bg-no-repeat w-32 h-28 hover:bg-blue-500" style="background-image: url('../{{$item->file_path}}');"> 
                   <input type="checkbox" class="duration-300 w-full h-full opacity-30 " name="signature[1][]" value="" />
               </label>
-              @endfor
+              @endforeach
           </div>
       </div>
   </div>
@@ -180,7 +179,6 @@
 </div>
 
 <div class="relative w-full p-8 mb-3 mt-0 h-full pb-32">
-  @if(file_exists('temp/pdf_'.auth()->user()->id.'.pdf'))
   <div class=" flex flex-row justify-between items-center pb-2 text-green-500">
     <!--   @if ($message = Session::get('success'))
       <div class="alert alert-success">
@@ -195,14 +193,14 @@
     </form>
 </div>
 <div class="shadow-lg  text-center h-screen bg-gradient-to-l from-gray-100 to-purple-200 ">
-    <div    class="flex flex-col space-y-4 overflow-x-auto pr-5 w-100" style="height: 100%"  x-show="scope"  x-transition>
+    <div class="flex flex-col space-y-4 overflow-x-auto pr-5 w-100" style="height: 100%"  x-show="scope"  x-transition>
         <div id="divEmbed" class="w-100 flex flex-col space-y-4"></div>
         @foreach($queue->details as $detail)
-        <div style="width:100%;">
-           <label> Halaman : {{$detail->page}} </label>
-           <embed id='embedPDF'  src='../{{$detail->file_path}}' width="100%" class="w-100 h-screen"  type='application/pdf'>
-           </div>
-           @endforeach
+          <div style="width:100%;">
+          <label> Halaman : {{$detail->page}} </label>
+          <embed id='embedPDF'  src='../{{$detail->file_path}}' width="100%" class="w-100 h-screen"  type='application/pdf'>
+          </div>
+        @endforeach
        </div>
        <div x-show="!scope" class=" flex flex-row space-x-10 px-10">
         <canvas id="canvas" class="bg-white cursor-move  mt-12 shadow-lg" height="285" width="200" >             
@@ -233,7 +231,6 @@
         <a class="duration-300 bg-yellow-500 hover:bg-yellow-400 text-white py-2.5 px-5 text-xl rounded-md font-semibold shadow-lg tracking-wider sticky" href="{{route('user.download.watermark.pdf')}}">
           <i class="fas fa-file-download mr-4"></i> Export</a>
       </div>
-      @endif
   </div>
 </div>
 

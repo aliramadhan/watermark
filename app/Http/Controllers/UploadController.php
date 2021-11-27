@@ -8,6 +8,7 @@ use Mpdf\Mpdf;
 use Illuminate\Support\Facades\File; 
 use Session;
 use App\Models\QueueSignature;
+use App\Models\WatermarkList;
 use App\Models\DetailQueue;
 
 class UploadController extends Controller
@@ -50,10 +51,11 @@ class UploadController extends Controller
         }*/
         $user = auth()->user();
         $queue = QueueSignature::where('user_id',$user->id)->first();
+        $signature = WatermarkList::where('user_id',$user->id)->get();
         if ($queue != null) {
             $queue->fileSize = $this->formatBytes($queue->file_size);
         }
-        return view('Upload.upload2',compact('user','queue'));
+        return view('Upload.upload2',compact('user','queue','signature'));
     }
     public function editWatermarkPDF(Request $request)
     {
@@ -150,36 +152,55 @@ class UploadController extends Controller
         $user = auth()->user();
         $pdf = $request->file('pdf');
         $watermark = $request->file('watermark');
-        $getSize = $pdf->getSize();
+
+        #get pdf data
+        $filename_pdf = 'pdf_'.$user->id.'_'.time().'.'.$pdf->getClientOriginalExtension();
+        $get_size_pdf = $pdf->getSize();
+
+        #get image data
+        $wm = getimagesize($watermark);
+        $filename_watermark = 'watermark_'.$user->id.'_'.time().'.'.$watermark->getClientOriginalExtension();
+        $width = $wm[0];
+        $height = $wm[1];
+        $get_size_watermark = $watermark->getSize();
 
         #move uploaded file to temp dir
-        $pdf->move(public_path('temp/'), 'pdf_'.$user->id.'.pdf');
-        $watermark->move(public_path('temp/'), 'watermark_'.$user->id.'.png');
-        #get total page
+        $pdf->move(public_path('temp/pdf/'), $filename_pdf);
+        $watermark->move(public_path('temp/watermark/'), $filename_watermark);
+        #get total page pdf
         $mpdf = new Mpdf();
-        $pagecount = $mpdf->setSourceFile('temp/pdf_'.auth()->user()->id.'.pdf');
+        $pagecount = $mpdf->setSourceFile('temp/pdf/'.$filename_pdf);
 
         #inser to database
         $queue = QueueSignature::updateOrCreate([
             'user_id' => $user->id
         ],[
-            'file_path' => 'temp/pdf_'.$user->id.'.pdf',
+            'file_path' => 'temp/pdf/'.$filename_pdf,
             'file_name' => $pdf->getClientOriginalName(),
-            'file_size' => $getSize,
+            'file_size' => $get_size_pdf,
             'total_page' => $pagecount,
+        ]);
+        $watermark = WatermarkList::updateOrCreate([
+            'user_id' => $user->id
+        ],[
+            'file_path' => 'temp/watermark/'.$filename_watermark,
+            'file_name' => $watermark->getClientOriginalName(),
+            'file_size' => $get_size_watermark,
+            'width' => $width,
+            'height' => $height,
         ]);
 
         #convert per page to new pdf file
         for ($i=1; $i<=$pagecount; $i++) {
             $new_mpdf = new Mpdf();
-            $new_mpdf->setSourceFile('temp/pdf_'.$user->id.'.pdf');
+            $new_mpdf->setSourceFile('temp/pdf/'.$filename_pdf);
             $import_page = $new_mpdf->ImportPage($i);
             $new_mpdf->UseTemplate($import_page);
-            $new_mpdf->Output('temp/detail_pdf_'.$i.'.pdf','F');
+            $new_mpdf->Output('temp/details/detail_'.$queue->id.'_'.$i.'.pdf','F');
             $detail_queue = DetailQueue::create([
                 'queue_signature_id' => $queue->id,
                 'page' => $i,
-                'file_path' => 'temp/detail_pdf_'.$i.'.pdf',
+                'file_path' => 'temp/details/detail_'.$queue->id.'_'.$i.'.pdf',
                 'x' => 0,
                 'y' => 0,
                 'width' => 0,
@@ -196,15 +217,12 @@ class UploadController extends Controller
     {
         $user = auth()->user();
         $queue = QueueSignature::where('user_id',$user->id)->first();
-        $watermark = public_path('temp/watermark_'.$user->id.'.png');
         if ($queue != null) {
             foreach ($queue->details as $detail) {
                 unlink($detail->file_path);
                 $detail->delete();
             }
-            //File::delete($image_path);
             unlink($queue->file_path);
-            unlink($watermark);
             $queue->delete();
         }
         return redirect()->back()->with('success','Delete berhasil.');
