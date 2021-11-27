@@ -225,9 +225,13 @@ class UploadController extends Controller
             if ($i < $pagecount)
             $mpdf->AddPage();
 
+            #delete file per page
+            unlink($detail->file_path);
+            $detail->delete();
             $i++;
         }
         $mpdf->Output('temp/download'.$user->id.'.pdf','D');
+        return redirect()->back()->with('success','Success export');
     }
     public function formatBytes($size, $precision = 2)
     {
