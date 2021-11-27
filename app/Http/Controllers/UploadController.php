@@ -108,7 +108,7 @@ class UploadController extends Controller
         //$mpdf->Output('temp/output_pdf'.auth()->user()->id.'.pdf','F');
         $embedPDF = "";
         foreach ($queue->details as $detail) {
-            $embedPDF .= "<embed id='embedPDF' src='../".$detail->file_path."' width='100%' height='600px' type='application/pdf'>";
+            $embedPDF .= "<embed id='embedPDF' src='../".$detail->file_path."' width='100%' height='600' type='application/pdf'>";
         }
         return response()->json(['embedPDF'=> $embedPDF]);
     }
@@ -137,7 +137,7 @@ class UploadController extends Controller
         //$embedPDF = "<embed id='embedPDF' src='../temp/output_pdf".auth()->user()->id.".pdf' width='100%' height='600px' type='application/pdf'>";
         $embedPDF = "";
         foreach ($queue->details as $detail) {
-            $embedPDF .= "<embed id='embedPDF' src='../".$detail->file_path."' width='100%' height='600px' type='application/pdf'>";
+            $embedPDF .= "<embed id='embedPDF' src='../".$detail->file_path."' width='100%' height='600' type='application/pdf'>";
         }
         return response()->json(['embedPDF'=> $embedPDF]);
     }
