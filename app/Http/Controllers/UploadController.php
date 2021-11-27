@@ -215,14 +215,19 @@ class UploadController extends Controller
         $queue = QueueSignature::where('user_id',$user->id)->first();
         $mpdf = new Mpdf();
         $pagecount = $mpdf->setSourceFile($queue->file_path);
+        $i = 1;
         foreach ($queue->details as $detail) {
             $new_mpdf = new Mpdf();
-            $new_mpdf->setSourceFile($detail->file_path);
-            $import_page = $new_mpdf->ImportPage(1);
+            $mpdf->setSourceFile($detail->file_path);
+            $import_page = $mpdf->ImportPage(1);
             $mpdf->UseTemplate($import_page);
+
+            if ($i < $pagecount)
             $mpdf->AddPage();
+
+            $i++;
         }
-        $mpdf->Output('temp/download'.$user->id.'.pdf','F');
+        $mpdf->Output('temp/download'.$user->id.'.pdf','D');
     }
     public function formatBytes($size, $precision = 2)
     {
