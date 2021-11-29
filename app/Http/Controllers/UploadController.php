@@ -126,6 +126,43 @@ class UploadController extends Controller
         return back()->withInput()
             ->with('success','File successfully uploaded.');
     }
+    public function uploadWatermark(Request $request)
+    {
+        $this->validate($request, [
+            'watermark' => 'required|image|mimes:jpg,jpeg,png,gif,svg|max:4096',
+        ]);
+
+        $watermark = $request->file('watermark');
+        $user = auth()->user();
+        #get image data
+        $wm = getimagesize($watermark);
+        $filename_watermark = 'watermark_'.$user->id.'_'.time().'.'.$watermark->getClientOriginalExtension();
+        $width = $wm[0];
+        $height = $wm[1];
+        $get_size_watermark = $watermark->getSize();
+        #move uploaded file to temp dir
+        $watermark->move(public_path('temp/watermark/'), $filename_watermark);
+        #insert into database
+        $watermark = WatermarkList::create([
+            'user_id' => $user->id,
+            'file_path' => 'temp/watermark/'.$filename_watermark,
+            'file_name' => $watermark->getClientOriginalName(),
+            'file_size' => $get_size_watermark,
+            'width' => $width,
+            'height' => $height,
+        ]);
+        $watermarks = WatermarkList::where('user_id',$user->id)->get();
+        $embedWatermark = "";
+        foreach ($watermarks as $item) {
+            $embedWatermark .= "<label class='inline-flex bg-cover  bg-no-repeat w-32 h-28 hover:bg-blue-500' style='background-image: url(../".$item->file_path.");'> 
+                    <input type='checkbox' class='duration-300 w-full h-full opacity-30' name='signature' value='".$item->file_path."' />
+                  </label>";
+        }
+        return response()->json([
+            'embedWatermark' => $embedWatermark,
+            'result' => $request->all()
+        ]);
+    }
     public function editWatermarkPDF(Request $request)
     {
         #get page

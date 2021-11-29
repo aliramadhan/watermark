@@ -65,6 +65,8 @@
 
             <div class="flex  space-x-8">
               <div class="flex flex-col space-y-2 justify-between">
+                <form method="POST" enctype="multipart/form-data" id="laravel-ajax-file-upload" action="javascript:void(0)">
+                  
                 <label class="font-semibold text-lg tracking-wide text-gray-700 pb-2">New Upload</label>
                 <img  class="img-preview h-32 w-52 object-contain mx-auto" />
                 <label class="w-max flex flex-col items-center px-4 py-2 bg-white  text-gray-600 rounded-lg  tracking-wide shadow-md uppercase border border-blue cursor-pointer hover:bg-blue-400 hover:text-white mt-1">                
@@ -72,14 +74,15 @@
                   <input class="hidden" type="file" name="watermark" value="{{old('watermark')}}" id="image" onchange="previewImage()"/>
                 </label>
 
-                <button class="shadow-md  justify-center w-full px-4 py-2 text-white bg-green-500 rounded-lg hover:bg-green-700 font-semibold tracking-wider imgButton">Upload Signature</button>
+                <button type="submit" class="shadow-md  justify-center w-full px-4 py-2 text-white bg-green-500 rounded-lg hover:bg-green-700 font-semibold tracking-wider imgButton" id="uploadSignature" >Upload Signature</button>
 
+                </form>
               </div>
 
               <div>
                 <label class="font-semibold text-lg tracking-wide text-gray-700 pb-2">Select from last upload</label>
 
-                <div class="grid grid-cols-4 gap-4 bg-gray-100 rounded-lg p-5 h-72 overflow-y-auto">
+                <div class="grid grid-cols-4 gap-4 bg-gray-100 rounded-lg p-5 h-72 overflow-y-auto" id="listSignature">
                   @foreach($signature as $item)
                   <label class="inline-flex bg-cover  bg-no-repeat w-32 h-28 hover:bg-blue-500" style="background-image: url('../{{$item->file_path}}');"> 
                     <input type="checkbox" class="duration-300 w-full h-full opacity-30" name="signature" value="{{$item->file_path}}" />
@@ -297,22 +300,17 @@ function previewImage(){
 
   const image = document.querySelector('#image');
   const imgPreview = document.querySelector('.img-preview');
-
-  if (document.querySelector('.imgButton')) {
-  const imgButton = document.querySelector('.imgButton'); 
-  imgButton.style.display = "none";
-  }
+  const imgButton = document.querySelector('.imgButton');
 
   imgPreview.style.display = "block";
+  imgButton.style.display = "none";
 
   const oFReader = new FileReader();
   oFReader.readAsDataURL(image.files[0]);
 
   oFReader.onload =function(oFReader){
    imgPreview.src = oFReader.target.result;  
-   if (document.querySelector('.imgButton')) {
-       imgButton.style.display = "block";
-   }  
+   imgButton.style.display = "block";
  }
 }
 
@@ -415,7 +413,31 @@ $("#myPdf").on("change", function(e){
           console.log(result);
           $("#divEmbed").html(result.embedPDF);
         }});
-     });
+      });
+      $('#laravel-ajax-file-upload').submit(function(e) {
+        e.preventDefault();
+        $.ajaxSetup({
+          headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          }
+        });
+        var formData = new FormData(this);
+        $.ajax({
+          type:'POST',
+          url: "{{ route('user.upload.watermark')}}",
+          data: formData,
+          cache:false,
+          contentType: false,
+          processData: false,
+          success: (data) => {
+            alert('File has been uploaded successfully');
+            $("#listSignature").html(data.embedWatermark);
+          },
+            error: function(data){
+            console.log(data);
+          }
+        });
+      });
     });
   </script>
 </x-app-layout>
