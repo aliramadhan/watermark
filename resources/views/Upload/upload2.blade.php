@@ -79,7 +79,7 @@
             <div class="grid grid-cols-4 gap-4 bg-gray-100 rounded-lg p-5 h-72 overflow-y-auto">
                 @foreach($signature as $item)
                 <label class="inline-flex bg-cover  bg-no-repeat w-32 h-28 hover:bg-blue-500" style="background-image: url('../{{$item->file_path}}');"> 
-                  <input type="checkbox" class="duration-300 w-full h-full opacity-30 " name="signature[1][]" value="" />
+                  <input type="checkbox" class="duration-300 w-full h-full opacity-30" id="getSignature" name="signature[1][]" value="{{$item->file_path}}" />
               </label>
               @endforeach
           </div>
@@ -90,7 +90,7 @@
 <!-- One big close button.  --->
 <div class="mt-5 sm:mt-6">
     <span class="flex w-full rounded-md shadow-sm">
-      <button @click="signature = false" class="inline-flex justify-center w-full px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-700 font-semibold tracking-wider">
+      <button id="selectSignature" @click="signature = false" class="inline-flex justify-center w-full px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-700 font-semibold tracking-wider">
         Save Signature
     </button>
 </span>
@@ -106,8 +106,10 @@
 
     <h2 class="mb-6 font-semibold text-xl text-gray-700 tracking-wide mt-5">Signature Settings</h2>  
 
-    <div class="mb-4 flex flex-col bg-gray-100 rounded-lg px-2 pt-4 pb-2">          
-       <img src="https://asset.kompas.com/crops/kx8WMDhQS8wiKodf0fV8-vrJRXU=/0x0:1000x667/750x500/data/photo/2020/02/12/5e43ee472fd72.jpg" class="img-preview  w-52  object-contain mx-auto rounded-md" />
+    <div class="mb-4 flex flex-col bg-gray-100 rounded-lg px-2 pt-4 pb-2">
+      <div id="watermark">
+       <img src="../{{$signature->first()->file_path}}" class="img-preview  w-52  object-contain mx-auto rounded-md" />
+      </div>        
        <div class="flex flex-row space-x-2 justify-center mt-2">
            <button @click="signature = ! signature" class="bg-white rounded-lg hover:bg-blue-400 hover:text-white duration-300 py-1 tracking-wide text-gray-700 shadow  px-2 text-sm"><i class="fas fa-redo mr-1" ></i> Change Signature</button> 
 
@@ -173,6 +175,9 @@
             <label class="tracking-wider"> Reset</label>
         </button>
     </div>
+    <button type="submit" name="submit" class="bg-white text-blue-500 px-4 w-full mx-auto  py-2 my-2 rounded-lg font-semibold hover:bg-blue-500 hover:text-white duration-300 shadow-lg tracking-wider" id="edit">
+      Apply Signature
+    </button>
 
 </div>
 </div>
