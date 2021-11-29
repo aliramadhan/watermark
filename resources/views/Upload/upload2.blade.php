@@ -300,17 +300,22 @@ function previewImage(){
 
   const image = document.querySelector('#image');
   const imgPreview = document.querySelector('.img-preview');
-  const imgButton = document.querySelector('.imgButton');
+
+  if (document.querySelector('.imgButton')) {
+  const imgButton = document.querySelector('.imgButton'); 
+  imgButton.style.display = "none";
+  }
 
   imgPreview.style.display = "block";
-  imgButton.style.display = "none";
 
   const oFReader = new FileReader();
   oFReader.readAsDataURL(image.files[0]);
 
   oFReader.onload =function(oFReader){
    imgPreview.src = oFReader.target.result;  
-   imgButton.style.display = "block";
+   if (document.querySelector('.imgButton')) {
+       imgButton.style.display = "block";
+   }  
  }
 }
 
