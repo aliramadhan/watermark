@@ -64,16 +64,16 @@
             </h3>
 
             <div class="flex  space-x-8">
-              <div class="flex flex-col space-y-2 justify-between" x-data="previewImage()">
+              <div class="flex flex-col space-y-2 justify-between">
                 <label class="font-semibold text-lg tracking-wide text-gray-700 pb-2">New Upload</label>
                 <img  class="img-preview h-32 w-52 object-contain mx-auto" />
                 <label class="w-max flex flex-col items-center px-4 py-2 bg-white  text-gray-600 rounded-lg  tracking-wide shadow-md uppercase border border-blue cursor-pointer hover:bg-blue-400 hover:text-white mt-1">                
                   <span class=" text-base leading-normal "><i class="fas fa-file-import mr-2"></i> Select signature </span>             
                   <input class="hidden" type="file" name="watermark" value="{{old('watermark')}}" id="image" onchange="previewImage()"/>
                 </label>
-               
+
                 <button class="shadow-md  justify-center w-full px-4 py-2 text-white bg-green-500 rounded-lg hover:bg-green-700 font-semibold tracking-wider imgButton">Upload Signature</button>
-               
+
               </div>
 
               <div>
@@ -119,13 +119,17 @@
 
          </div>
        </div>    
-       <div class="mb-4 flex flex-col">
-        <label class="text-gray-600"><i class="fas fa-file-alt mr-1.5"></i> Select Page Set</label>
-        <input type="text" name="pages" placeholder="1, 2, 3, 4 .. - 100" class="bg-gray-100 hover:border-indigo-400 duration-300 rounded-lg border-gray-200 py-1.5 px-3.5 mt-1"  id="formPages" value="{{old('pages')}}">           
+       <div class="mb-4 grid grid-cols-2 gap-4">
+         <div class="col-span-2 -mb-2 flex items-center justify-between font-semibold ">
+          <label class="text-gray-600"><i class="fas fa-file-alt mr-1.5"></i> Select Page </label>
+          <button @click="scope = ! scope" class="bg-white rounded-lg hover:bg-blue-400 hover:text-white duration-300 py-1 tracking-wide text-gray-700 shadow border px-2 text-sm"><i class="fas fa-search-plus mr-1" ></i> Set Here</button>     
+        </div>             
+        <input type="text" name="pages" placeholder="1, 2, 3, 4 .. - 100" class="col-span-2 bg-gray-100 hover:border-indigo-400 duration-300 rounded-lg border-gray-200 py-1.5 px-3.5 mt-1"  id="formPages" value="{{old('pages')}}">  
       </div>       
-      <div class="mb-4 flex flex-col">
+      <div class="mb-4 flex flex-col" x-data="{total_value:50}">
         <label class="text-gray-600"><i class="far fa-sticky-note mr-1.5"></i>Opacity (Ketebalan)</label>
-        <input type="number" name="opacity" class="bg-gray-100 hover:border-indigo-400 duration-300 rounded-lg border-gray-200 py-1.5 px-3.5 mt-1"  id="formOpacity" value="{{old('opacity')}}" min="1" max="100" placeholder="1 - 100">
+        <input type="number" name="opacity" class="bg-gray-100 hover:border-indigo-400 duration-300 rounded-lg border-gray-200 py-1.5 px-3.5 mt-1"  id="formOpacity" value="{{old('opacity')}}" min="1" max="100" placeholder="1 - 100" x-model="total_value">
+        <input class="w-full" type="range" x-model="total_value" min="0" max="100" step="1" x-model="total_value" >
       </div>      
       <div class="mb-4 grid grid-cols-2 gap-4">
         <div class="col-span-2 -mb-2 flex items-center justify-between font-semibold ">
@@ -142,20 +146,20 @@
           <input type="number" name="y" placeholder="Y" class="bg-gray-100 hover:border-indigo-400 duration-300 rounded-lg border-gray-200 py-1.5 px-3.5 w-full"  id="formY" value="{{old('y')}}" max="285">
         </div>
       </div> 
-      <div class="mb-4 grid grid-cols-2 gap-4">
+      <div class="mb-4 grid grid-cols-2 gap-4" x-data="{setDefaultH: '',setDefaultW: '' }">
         <div class="col-span-2 -mb-2 flex items-center justify-between font-semibold ">
           <label class=" text-gray-700 "><i class="fas fa-pencil-ruler mr-1.5"></i> Size
           </label>
-          <button @click="scope = ! scope" class="bg-white rounded-lg hover:bg-blue-400 hover:text-white duration-300 py-1 tracking-wide text-gray-700 shadow border px-2 text-sm"><i class="fas fa-share-square mr-1"></i> Use default</button> 
+          <button x-on:click="setDefaultH = '{{$item->height}}', setDefaultW = '{{$item->width}}' " class="bg-white rounded-lg hover:bg-blue-400 hover:text-white duration-300 py-1 tracking-wide text-gray-700 shadow border px-2 text-sm"><i class="fas fa-share-square mr-1"></i> Use default</button> 
         </div>
 
         <div>
           <label class="text-gray-500">Width</label>
-          <input type="number" placeholder="Pixels" name="widthWatermark" class="bg-gray-100 hover:border-indigo-400 duration-300 rounded-lg border-gray-200 py-1.5 px-3.5 w-full"  id="formWidht" value="{{old('widthWatermark')}}">
+          <input type="number" placeholder="Pixels" name="widthWatermark" class="bg-gray-100 hover:border-indigo-400 duration-300 rounded-lg border-gray-200 py-1.5 px-3.5 w-full"  id="formWidht" x-model="setDefaultW" value="{{old('widthWatermark')}}">
         </div>
         <div >
           <label class="text-gray-500">Height</label>
-          <input type="number" placeholder="Pixels" name="heightWatermark" class="bg-gray-100 hover:border-indigo-400 duration-300 rounded-lg border-gray-200 py-1.5 px-3.5 w-full"  id="formHeight" value="{{old('heightWatermark')}}">
+          <input type="number" placeholder="Pixels" name="heightWatermark" class="bg-gray-100 hover:border-indigo-400 duration-300 rounded-lg border-gray-200 py-1.5 px-3.5 w-full"  id="formHeight" x-model="setDefaultH" value="{{old('heightWatermark')}}">
         </div>
       </div>
       <div class="mb-4 grid grid-cols-2 border-t pt-4 -mx-5 px-5 text-sm">
@@ -187,7 +191,7 @@
   </div>
 </div>
 
-<div class="relative w-full p-8 mb-3 mt-0 h-full pb-32">
+<div class="relative w-full p-8 mb-3 mt-0 h-full">
   <div class=" flex flex-row justify-between items-center pb-2 text-green-500">
     <!--   @if ($message = Session::get('success'))
       <div class="alert alert-success">
@@ -195,13 +199,9 @@
     </div>
     @endif -->
 
-    <form method="POST" action="{{route('user.delete.upload2',$queue->id)}}">
-      @csrf
-      @method('DELETE')
-      <button class="text-white bg-red-500  px-4 py-2 rounded-lg text-xl font-semibold tracking-wider hover:bg-red-600"> <i class="fas fa-trash mr-2"></i> Delete</button>
-    </form>
+
   </div>
-  <div class="shadow-lg  text-center h-screen bg-gradient-to-l from-gray-100 to-purple-200 ">
+  <div class="overflow-y-auto" style="height: 800px">
     <div class="flex flex-col space-y-4 overflow-x-auto pr-5 w-100" style="height: 100%"  x-show="scope"  x-transition>
       <div id="divEmbed" class="w-100 flex flex-col space-y-4">
         @foreach($queue->details as $detail)
@@ -237,19 +237,22 @@
   </div>
   @if($queue !== null)
   <div class="flex space-x-6 items-center justify-end bg-gradient-to-l from-gray-500  px-7 py-4 pb-5 shadow-xl  right-0 bottom-0 w-full absolute  text-right ">
-    <button class="duration-300 bg-blue-500 hover:bg-blue-600 text-white py-2.5 px-5 text-xl rounded-md font-semibold shadow-lg tracking-wider sticky">
-      <i class="fas fa-save"></i> Save</button>
-      <a class="duration-300 bg-yellow-500 hover:bg-yellow-400 text-white py-2.5 px-5 text-xl rounded-md font-semibold shadow-lg tracking-wider sticky" href="{{route('user.download.watermark.pdf')}}">
-        <i class="fas fa-file-download mr-4"></i> Export</a>
-  </div>
-  @endif
+    <form method="POST" action="{{route('user.delete.upload2',$queue->id)}}">
+      @csrf
+      @method('DELETE')
+      <button class="text-white bg-red-500  px-4 py-2 rounded-lg text-xl font-semibold tracking-wider hover:bg-red-600"> <i class="fas fa-trash mr-2"></i> Delete</button>
+    </form>
+    <a class="duration-300 bg-yellow-500 hover:bg-yellow-400 text-white py-2.5 px-5 text-xl rounded-md font-semibold shadow-lg tracking-wider sticky" href="{{route('user.download.watermark.pdf')}}">
+      <i class="fas fa-file-download mr-4"></i> Export</a>
     </div>
+    @endif
   </div>
+</div>
 
 
-  <script src="http://code.jquery.com/jquery-3.3.1.min.js"
-  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-  crossorigin="anonymous">
+<script src="http://code.jquery.com/jquery-3.3.1.min.js"
+integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+crossorigin="anonymous">
 </script>
 <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
 
@@ -297,7 +300,7 @@ function previewImage(){
   const imgButton = document.querySelector('.imgButton');
 
   imgPreview.style.display = "block";
-    imgButton.style.display = "none";
+  imgButton.style.display = "none";
 
   const oFReader = new FileReader();
   oFReader.readAsDataURL(image.files[0]);
