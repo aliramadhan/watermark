@@ -65,6 +65,8 @@
 
             <div class="flex  space-x-8">
               <div class="flex flex-col space-y-2 justify-between">
+                <form method="POST" enctype="multipart/form-data" id="laravel-ajax-file-upload" action="javascript:void(0)">
+                  
                 <label class="font-semibold text-lg tracking-wide text-gray-700 pb-2">New Upload</label>
                 <img  class="img-preview h-32 w-52 object-contain mx-auto" />
                 <label class="w-max flex flex-col items-center px-4 py-2 bg-white  text-gray-600 rounded-lg  tracking-wide shadow-md uppercase border border-blue cursor-pointer hover:bg-blue-400 hover:text-white mt-1">                
@@ -72,8 +74,9 @@
                   <input class="hidden" type="file" name="watermark" value="{{old('watermark')}}" id="image" onchange="previewImage()"/>
                 </label>
 
-                <button class="shadow-md  justify-center w-full px-4 py-2 text-white bg-green-500 rounded-lg hover:bg-green-700 font-semibold tracking-wider imgButton">Upload Signature</button>
+                <button type="submit" class="shadow-md  justify-center w-full px-4 py-2 text-white bg-green-500 rounded-lg hover:bg-green-700 font-semibold tracking-wider imgButton" id="uploadSignature" >Upload Signature</button>
 
+                </form>
               </div>
 
               <div>
@@ -410,7 +413,27 @@ $("#myPdf").on("change", function(e){
           console.log(result);
           $("#divEmbed").html(result.embedPDF);
         }});
-     });
+      });
+      $('#laravel-ajax-file-upload').submit(function(e){
+       e.preventDefault();
+       var formData = new FormData(this);
+       $.ajaxSetup({
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+        }
+      });
+       jQuery.ajax({
+        url: "{{ route('user.upload.watermark') }}",
+        type: 'post',
+        data: formData,
+        cache:false,
+        contentType: false,
+        processData: false,
+
+        success: function(result){
+          console.log(result);
+        }});
+      });
     });
   </script>
 </x-app-layout>

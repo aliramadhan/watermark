@@ -126,6 +126,12 @@ class UploadController extends Controller
         return back()->withInput()
             ->with('success','File successfully uploaded.');
     }
+    public function uploadWatermark(Request $request)
+    {
+        return response()->json([
+            'success' => $request->all()
+        ]);
+    }
     public function editWatermarkPDF(Request $request)
     {
         #get page
