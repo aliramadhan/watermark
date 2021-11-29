@@ -64,7 +64,7 @@
             </h3>
 
             <div class="flex  space-x-8">
-              <div class="flex flex-col space-y-2 justify-between" x-data="previewImage()">
+              <div class="flex flex-col space-y-2 justify-between">
                 <label class="font-semibold text-lg tracking-wide text-gray-700 pb-2">New Upload</label>
                 <img  class="img-preview h-32 w-52 object-contain mx-auto" />
                 <label class="w-max flex flex-col items-center px-4 py-2 bg-white  text-gray-600 rounded-lg  tracking-wide shadow-md uppercase border border-blue cursor-pointer hover:bg-blue-400 hover:text-white mt-1">                
@@ -128,7 +128,7 @@
       <div class="mb-4 flex flex-col" x-data="{total_value:50}">
         <label class="text-gray-600"><i class="far fa-sticky-note mr-1.5"></i>Opacity (Ketebalan)</label>
         <input type="number" name="opacity" class="bg-gray-100 hover:border-indigo-400 duration-300 rounded-lg border-gray-200 py-1.5 px-3.5 mt-1"  id="formOpacity" value="{{old('opacity')}}" min="1" max="100" placeholder="1 - 100" x-model="total_value">
-        <input class="w-full" type="range" x-model="total_value" min="0" max="100" step="1" x-model="total_value" style="opacity: x-model='total_value'">
+        <input class="w-full" type="range" x-model="total_value" min="0" max="100" step="1" x-model="total_value" >
       </div>      
       <div class="mb-4 grid grid-cols-2 gap-4">
         <div class="col-span-2 -mb-2 flex items-center justify-between font-semibold ">
@@ -145,20 +145,20 @@
           <input type="number" name="y" placeholder="Y" class="bg-gray-100 hover:border-indigo-400 duration-300 rounded-lg border-gray-200 py-1.5 px-3.5 w-full"  id="formY" value="{{old('y')}}" max="285">
         </div>
       </div> 
-      <div class="mb-4 grid grid-cols-2 gap-4">
+      <div class="mb-4 grid grid-cols-2 gap-4" x-data="{setDefaultH: '',setDefaultW: '' }">
         <div class="col-span-2 -mb-2 flex items-center justify-between font-semibold ">
           <label class=" text-gray-700 "><i class="fas fa-pencil-ruler mr-1.5"></i> Size
           </label>
-          <button @click="scope = ! scope" class="bg-white rounded-lg hover:bg-blue-400 hover:text-white duration-300 py-1 tracking-wide text-gray-700 shadow border px-2 text-sm"><i class="fas fa-share-square mr-1"></i> Use default</button> 
+          <button x-on:click="setDefaultH = '{{$item->height}}', setDefaultW = '{{$item->width}}' " class="bg-white rounded-lg hover:bg-blue-400 hover:text-white duration-300 py-1 tracking-wide text-gray-700 shadow border px-2 text-sm"><i class="fas fa-share-square mr-1"></i> Use default</button> 
         </div>
 
         <div>
           <label class="text-gray-500">Width</label>
-          <input type="number" placeholder="Pixels" name="widthWatermark" class="bg-gray-100 hover:border-indigo-400 duration-300 rounded-lg border-gray-200 py-1.5 px-3.5 w-full"  id="formWidht" value="{{old('widthWatermark')}}">
+          <input type="number" placeholder="Pixels" name="widthWatermark" class="bg-gray-100 hover:border-indigo-400 duration-300 rounded-lg border-gray-200 py-1.5 px-3.5 w-full"  id="formWidht" x-model="setDefaultW" value="{{old('widthWatermark')}}">
         </div>
         <div >
           <label class="text-gray-500">Height</label>
-          <input type="number" placeholder="Pixels" name="heightWatermark" class="bg-gray-100 hover:border-indigo-400 duration-300 rounded-lg border-gray-200 py-1.5 px-3.5 w-full"  id="formHeight" value="{{old('heightWatermark')}}">
+          <input type="number" placeholder="Pixels" name="heightWatermark" class="bg-gray-100 hover:border-indigo-400 duration-300 rounded-lg border-gray-200 py-1.5 px-3.5 w-full"  id="formHeight" x-model="setDefaultH" value="{{old('heightWatermark')}}">
         </div>
       </div>
       <div class="mb-4 grid grid-cols-2 border-t pt-4 -mx-5 px-5 text-sm">
