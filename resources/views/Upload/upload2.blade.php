@@ -82,7 +82,7 @@
               <div>
                 <label class="font-semibold text-lg tracking-wide text-gray-700 pb-2">Select from last upload</label>
 
-                <div class="grid grid-cols-4 gap-4 bg-gray-100 rounded-lg p-5 h-72 overflow-y-auto">
+                <div class="grid grid-cols-4 gap-4 bg-gray-100 rounded-lg p-5 h-72 overflow-y-auto" id="listSignature">
                   @foreach($signature as $item)
                   <label class="inline-flex bg-cover  bg-no-repeat w-32 h-28 hover:bg-blue-500" style="background-image: url('../{{$item->file_path}}');"> 
                     <input type="checkbox" class="duration-300 w-full h-full opacity-30" name="signature" value="{{$item->file_path}}" />
@@ -300,22 +300,17 @@ function previewImage(){
 
   const image = document.querySelector('#image');
   const imgPreview = document.querySelector('.img-preview');
-
-  if (document.querySelector('.imgButton')) {
-  const imgButton = document.querySelector('.imgButton'); 
-  imgButton.style.display = "none";
-  }
+  const imgButton = document.querySelector('.imgButton');
 
   imgPreview.style.display = "block";
+  imgButton.style.display = "none";
 
   const oFReader = new FileReader();
   oFReader.readAsDataURL(image.files[0]);
 
   oFReader.onload =function(oFReader){
    imgPreview.src = oFReader.target.result;  
-   if (document.querySelector('.imgButton')) {
-       imgButton.style.display = "block";
-   }  
+   imgButton.style.display = "block";
  }
 }
 
@@ -419,25 +414,29 @@ $("#myPdf").on("change", function(e){
           $("#divEmbed").html(result.embedPDF);
         }});
       });
-      $('#laravel-ajax-file-upload').submit(function(e){
-       e.preventDefault();
-       var formData = new FormData(this);
-       $.ajaxSetup({
-        headers: {
-          'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-        }
-      });
-       jQuery.ajax({
-        url: "{{ route('user.upload.watermark') }}",
-        type: 'post',
-        data: formData,
-        cache:false,
-        contentType: false,
-        processData: false,
-
-        success: function(result){
-          console.log(result);
-        }});
+      $('#laravel-ajax-file-upload').submit(function(e) {
+        e.preventDefault();
+        $.ajaxSetup({
+          headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          }
+        });
+        var formData = new FormData(this);
+        $.ajax({
+          type:'POST',
+          url: "{{ route('user.upload.watermark')}}",
+          data: formData,
+          cache:false,
+          contentType: false,
+          processData: false,
+          success: (data) => {
+            alert('File has been uploaded successfully');
+            $("#listSignature").html(data.embedWatermark);
+          },
+            error: function(data){
+            console.log(data);
+          }
+        });
       });
     });
   </script>
