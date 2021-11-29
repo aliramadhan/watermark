@@ -126,7 +126,7 @@
         </div>             
         <input type="text" name="pages" placeholder="1, 2, 3, 4 .. - 100" class="col-span-2 bg-gray-100 hover:border-indigo-400 duration-300 rounded-lg border-gray-200 py-1.5 px-3.5 mt-1"  id="formPages" value="{{old('pages')}}">  
       </div>       
-      <div class="mb-4 flex flex-col" x-data="{total_value:50}">
+      <div class="mb-4 flex flex-col" x-data="{total_value:100}">
         <label class="text-gray-600"><i class="far fa-sticky-note mr-1.5"></i>Opacity (Ketebalan)</label>
         <input type="number" name="opacity" class="bg-gray-100 hover:border-indigo-400 duration-300 rounded-lg border-gray-200 py-1.5 px-3.5 mt-1"  id="formOpacity" value="{{old('opacity')}}" min="1" max="100" placeholder="1 - 100" x-model="total_value">
         <input class="w-full" type="range" x-model="total_value" min="0" max="100" step="1" x-model="total_value" >
@@ -207,7 +207,7 @@
         @foreach($queue->details as $detail)
           <div style="width:100%;">
             <label> Halaman : {{$detail->page}} </label>
-            <embed id='embedPDF'  src='../{{$detail->file_path}}' width="100%" class="w-100 h-screen"  type='application/pdf'>
+            <embed id='embedPDF'  src='../{{$detail->file_path}}' width="100%" class="w-100" height="1200"  type='application/pdf'>
           </div>
         @endforeach
       </div>
