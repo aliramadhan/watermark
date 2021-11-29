@@ -82,7 +82,7 @@
                 <div class="grid grid-cols-4 gap-4 bg-gray-100 rounded-lg p-5 h-72 overflow-y-auto">
                   @foreach($signature as $item)
                   <label class="inline-flex bg-cover  bg-no-repeat w-32 h-28 hover:bg-blue-500" style="background-image: url('../{{$item->file_path}}');"> 
-                    <input type="checkbox" class="duration-300 w-full h-full opacity-30" id="getSignature" name="signature[1][]" value="{{$item->file_path}}" />
+                    <input type="checkbox" class="duration-300 w-full h-full opacity-30" name="signature" value="{{$item->file_path}}" />
                   </label>
                   @endforeach
                 </div>
@@ -111,7 +111,8 @@
 
         <div class="mb-4 flex flex-col bg-gray-100 rounded-lg px-2 pt-4 pb-2">
           <div id="watermark">
-           <img src="../{{$signature->first()->file_path}}" class="img-preview  w-52  object-contain mx-auto rounded-md" />
+           <img src="" class="img-preview  w-52  object-contain mx-auto rounded-md" id="urlWatermark" />
+           <input type="hidden" id="getWatermark">
          </div>        
          <div class="flex flex-row space-x-2 justify-center mt-2">
            <button @click="signature = ! signature" class="bg-white rounded-lg hover:bg-blue-400 hover:text-white duration-300 py-1 tracking-wide text-gray-700 shadow  px-2 text-sm"><i class="fas fa-redo mr-1" ></i> Change Signature</button> 
@@ -202,13 +203,14 @@
   </div>
   <div class="shadow-lg  text-center h-screen bg-gradient-to-l from-gray-100 to-purple-200 ">
     <div class="flex flex-col space-y-4 overflow-x-auto pr-5 w-100" style="height: 100%"  x-show="scope"  x-transition>
-      <div id="divEmbed" class="w-100 flex flex-col space-y-4"></div>
-      @foreach($queue->details as $detail)
-      <div style="width:100%;">
-        <label> Halaman : {{$detail->page}} </label>
-        <embed id='embedPDF'  src='../{{$detail->file_path}}' width="100%" class="w-100 h-screen"  type='application/pdf'>
-        </div>
+      <div id="divEmbed" class="w-100 flex flex-col space-y-4">
+        @foreach($queue->details as $detail)
+          <div style="width:100%;">
+            <label> Halaman : {{$detail->page}} </label>
+            <embed id='embedPDF'  src='../{{$detail->file_path}}' width="100%" class="w-100 h-screen"  type='application/pdf'>
+          </div>
         @endforeach
+      </div>
       </div>
       <div x-show="!scope" class=" flex flex-row space-x-10 px-10">
         <canvas id="canvas" class="bg-white cursor-move  mt-12 shadow-lg" height="285" width="200" >             
@@ -272,8 +274,6 @@ $("input:checkbox").on('click', function() {
 </script>
 
 <script type="text/javascript">
-
-
  function getCursorPosition(canvas, event) {
   const rect = canvas.getBoundingClientRect()
   const x = event.clientX - rect.left
@@ -359,6 +359,11 @@ $("#myPdf").on("change", function(e){
 
     </script>
     <script>
+    $("#selectSignature").click(function(){
+      var getURLSignature = $('input[name="signature"]:checked').val();
+      var html = "<img src='../"+getURLSignature+"' class='img-preview  w-52  object-contain mx-auto rounded-md' id='urlWatermark' /> <input type='hidden' id='getWatermark' value='"+getURLSignature+"'>";
+      $("#watermark").html(html);
+    });
      jQuery(document).ready(function(){
       jQuery('#edit').click(function(e){
        e.preventDefault();
@@ -366,7 +371,7 @@ $("#myPdf").on("change", function(e){
         headers: {
           'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
         }
-      });
+       });
        jQuery.ajax({
         url: "{{ route('user.edit.watermark.pdf') }}",
         method: 'post',
@@ -378,12 +383,13 @@ $("#myPdf").on("change", function(e){
           y: jQuery('#formY').val(),
           width: jQuery('#formWidht').val(),
           height: jQuery('#formHeight').val(),
+          watermark: jQuery('#getWatermark').val(),
         },
         success: function(result){
           console.log(result);
           $("#divEmbed").html(result.embedPDF);
         }});
-     });
+      });
       jQuery('#reset').click(function(e){
        e.preventDefault();
        $.ajaxSetup({

@@ -57,92 +57,6 @@ class UploadController extends Controller
         }
         return view('Upload.upload2',compact('user','queue','signature'));
     }
-    public function editWatermarkPDF(Request $request)
-    {
-        #get page
-        if (strlen($request->pages) > 0) {
-            $pageWatermarked = explode(",", $request->pages);
-        }
-        #get opacity
-        if ($request->opacity) {
-            $request->opacity = $request->opacity/100;
-        }
-        $user = auth()->user();
-        $queue = QueueSignature::where('user_id',$user->id)->first();
-        $details = DetailQueue::where('queue_signature_id',$queue->id)->whereIn('page',$pageWatermarked)->get();
-        #applied watermark to page 
-        foreach ($details as $detail) {
-            $mpdf = new Mpdf();
-            $mpdf->setSourceFile($detail->file_path);
-            $import_page = $mpdf->ImportPage(1);
-            $mpdf->UseTemplate($import_page);
-            $mpdf->SetWatermarkImage(
-                'temp/watermark_'.auth()->user()->id.'.png',
-                $request->opacity,
-                array($request->width,$request->height),
-                array($request->x,$request->y),
-            );
-            $mpdf->showWatermarkImage = true;
-            $mpdf->Output($detail->file_path,'F');
-        }
-        /*
-        for ($i=1; $i<=$pagecount; $i++) {
-            $import_page = $mpdf->ImportPage($i);
-            $mpdf->UseTemplate($import_page);
-            $mpdf->SetWatermarkImage(
-                'temp/watermark_'.auth()->user()->id.'.png',
-                $request->opacity,
-                array($request->width,$request->height),
-                array($request->x,$request->y),
-            );
-            if (strlen($request->pages) > 0) {
-                if (in_array($i, $pageWatermarked)) {
-                    $mpdf->showWatermarkImage = true;
-                }
-                else{
-                    $mpdf->showWatermarkImage = false;
-                }
-            }
-            if ($i < $pagecount)
-                $mpdf->AddPage();
-        }
-        */
-        //$mpdf->Output('temp/output_pdf'.auth()->user()->id.'.pdf','F');
-        $embedPDF = "";
-        foreach ($queue->details as $detail) {
-            $embedPDF .= "<embed id='embedPDF' src='../".$detail->file_path."' width='100%' height='600' type='application/pdf'>";
-        }
-        return response()->json(['embedPDF'=> $embedPDF]);
-    }
-    public function resetWatermarkPDF(Request $request)
-    {
-        $mpdf = new Mpdf();
-        $user = auth()->user();
-        $queue = QueueSignature::where('user_id',$user->id)->first();
-        $pagecount = $mpdf->setSourceFile('temp/pdf_'.$user->id.'.pdf');
-
-        //applied from uploaded file
-        for ($i=1; $i<=$pagecount; $i++) {
-            /*
-            $import_page = $mpdf->ImportPage($i);
-            $mpdf->UseTemplate($import_page);
-            if ($i < $pagecount)
-                $mpdf->AddPage();
-                */
-            $new_mpdf = new Mpdf();
-            $new_mpdf->setSourceFile('temp/pdf_'.$user->id.'.pdf');
-            $import_page = $new_mpdf->ImportPage($i);
-            $new_mpdf->UseTemplate($import_page);
-            $new_mpdf->Output('temp/detail_pdf_'.$i.'.pdf','F');
-        }
-        //$mpdf->Output('temp/output_pdf'.auth()->user()->id.'.pdf','F');
-        //$embedPDF = "<embed id='embedPDF' src='../temp/output_pdf".auth()->user()->id.".pdf' width='100%' height='600px' type='application/pdf'>";
-        $embedPDF = "";
-        foreach ($queue->details as $detail) {
-            $embedPDF .= "<embed id='embedPDF' src='../".$detail->file_path."' width='100%' height='600' type='application/pdf'>";
-        }
-        return response()->json(['embedPDF'=> $embedPDF]);
-    }
     public function imageFileUpload2(Request $request)
     {
         $this->validate($request, [
@@ -180,9 +94,8 @@ class UploadController extends Controller
             'file_size' => $get_size_pdf,
             'total_page' => $pagecount,
         ]);
-        $watermark = WatermarkList::updateOrCreate([
-            'user_id' => $user->id
-        ],[
+        $watermark = WatermarkList::create([
+            'user_id' => $user->id,
             'file_path' => 'temp/watermark/'.$filename_watermark,
             'file_name' => $watermark->getClientOriginalName(),
             'file_size' => $get_size_watermark,
@@ -212,6 +125,92 @@ class UploadController extends Controller
 
         return back()->withInput()
             ->with('success','File successfully uploaded.');
+    }
+    public function editWatermarkPDF(Request $request)
+    {
+        #get page
+        if (strlen($request->pages) > 0) {
+            $pageWatermarked = explode(",", $request->pages);
+        }
+        #get opacity
+        if ($request->opacity) {
+            $request->opacity = $request->opacity/100;
+        }
+        $user = auth()->user();
+        $queue = QueueSignature::where('user_id',$user->id)->first();
+        $details = DetailQueue::where('queue_signature_id',$queue->id)->whereIn('page',$pageWatermarked)->get();
+        #applied watermark to page 
+        foreach ($details as $detail) {
+            $mpdf = new Mpdf();
+            $mpdf->setSourceFile($detail->file_path);
+            $import_page = $mpdf->ImportPage(1);
+            $mpdf->UseTemplate($import_page);
+            $mpdf->SetWatermarkImage(
+                $request->watermark,
+                $request->opacity,
+                array($request->width,$request->height),
+                array($request->x,$request->y),
+            );
+            $mpdf->showWatermarkImage = true;
+            $mpdf->Output($detail->file_path,'F');
+        }
+        /*
+        for ($i=1; $i<=$pagecount; $i++) {
+            $import_page = $mpdf->ImportPage($i);
+            $mpdf->UseTemplate($import_page);
+            $mpdf->SetWatermarkImage(
+                'temp/watermark_'.auth()->user()->id.'.png',
+                $request->opacity,
+                array($request->width,$request->height),
+                array($request->x,$request->y),
+            );
+            if (strlen($request->pages) > 0) {
+                if (in_array($i, $pageWatermarked)) {
+                    $mpdf->showWatermarkImage = true;
+                }
+                else{
+                    $mpdf->showWatermarkImage = false;
+                }
+            }
+            if ($i < $pagecount)
+                $mpdf->AddPage();
+        }
+        */
+        //$mpdf->Output('temp/output_pdf'.auth()->user()->id.'.pdf','F');
+        $embedPDF = "";
+        foreach ($queue->details as $detail) {
+            $embedPDF .= "<div style='width:100%;''><label> Halaman : ".$detail->page." </label> <embed id='embedPDF' src='../".$detail->file_path."' width='100%' class='w-100 h-screen' type='application/pdf'></div";
+        }
+        return response()->json(['embedPDF'=> $embedPDF, 'result' => $request->all()]);
+    }
+    public function resetWatermarkPDF(Request $request)
+    {
+        $mpdf = new Mpdf();
+        $user = auth()->user();
+        $queue = QueueSignature::where('user_id',$user->id)->first();
+        $pagecount = $mpdf->setSourceFile('temp/pdf_'.$user->id.'.pdf');
+
+        //applied from uploaded file
+        for ($i=1; $i<=$pagecount; $i++) {
+            /*
+            $import_page = $mpdf->ImportPage($i);
+            $mpdf->UseTemplate($import_page);
+            if ($i < $pagecount)
+                $mpdf->AddPage();
+                */
+            $new_mpdf = new Mpdf();
+            $new_mpdf->setSourceFile('temp/pdf_'.$user->id.'.pdf');
+            $import_page = $new_mpdf->ImportPage($i);
+            $new_mpdf->UseTemplate($import_page);
+            $new_mpdf->Output('temp/detail_pdf_'.$i.'.pdf','F');
+        }
+        //$mpdf->Output('temp/output_pdf'.auth()->user()->id.'.pdf','F');
+        //$embedPDF = "<embed id='embedPDF' src='../temp/output_pdf".auth()->user()->id.".pdf' width='100%' height='600px' type='application/pdf'>";
+        $embedPDF = "";
+        foreach ($queue->details as $detail) {
+            $embedPDF .= "<embed id='embedPDF' src='../".$detail->file_path."' width='100%' height='600' type='application/pdf'>";
+        }
+        return response()->json(['embedPDF'=> $embedPDF]);
     }
     public function deleteQueueSignature(QueueSignature $queue)
     {
