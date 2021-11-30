@@ -64,20 +64,20 @@
             </h3>
 
             <div class="flex  space-x-8">
-              <div class="flex flex-col space-y-2 justify-between">
-                <form method="POST" enctype="multipart/form-data" id="laravel-ajax-file-upload" action="javascript:void(0)">
+              
+                <form method="POST" enctype="multipart/form-data" id="laravel-ajax-file-upload" action="javascript:void(0)" class="flex flex-col space-y-2 justify-between" x-data="{Btn : false}">
 
                   <label class="font-semibold text-lg tracking-wide text-gray-700 pb-2">New Upload</label>
                   <img  class="img-preview h-32 w-52 object-contain mx-auto" />
                   <label class="w-max flex flex-col items-center px-4 py-2 bg-white  text-gray-600 rounded-lg  tracking-wide shadow-md uppercase border border-blue cursor-pointer hover:bg-blue-400 hover:text-white mt-1">                
                     <span class=" text-base leading-normal "><i class="fas fa-file-import mr-2"></i> Select signature </span>             
-                    <input class="hidden" type="file" name="watermark" value="{{old('watermark')}}" id="image" onchange="previewImage()"/>
+                    <input class="hidden" type="file" name="watermark" value="{{old('watermark')}}" id="image" onchange="previewImage()" @click="Btn = true"/>
                   </label>
 
-                  <button type="submit" class="shadow-md  justify-center w-full px-4 py-2 text-white bg-green-500 rounded-lg hover:bg-green-700 font-semibold tracking-wider imgButton" id="uploadSignature" >Upload Signature</button>
+                  <button type="submit" class="shadow-md  justify-center w-full px-4 py-2 text-white bg-green-500 rounded-lg hover:bg-green-700 font-semibold tracking-wider " x-show="Btn" id="uploadSignature" x-transition >Upload Signature</button>
 
                 </form>
-              </div>
+              
 
               <div>
                 <label class="font-semibold text-lg tracking-wide text-gray-700 pb-2">Select from last upload</label>
@@ -300,9 +300,7 @@ function previewImage(){
 
  const image = document.querySelector('#image');
  const imgPreview = document.querySelector('.img-preview');
- const imgButton = document.querySelector('.imgButton');
 
- imgPreview.style.display = "block";
  if (document.querySelector('.imgButton')) {
   const imgButton = document.querySelector('.imgButton'); 
   imgButton.style.display = "none";
@@ -315,7 +313,7 @@ oFReader.readAsDataURL(image.files[0]);
 
 oFReader.onload =function(oFReader){
  imgPreview.src = oFReader.target.result;  
- imgButton.style.display = "block";
+ 
  if (document.querySelector('.imgButton')) {
    imgButton.style.display = "block";
  }  
