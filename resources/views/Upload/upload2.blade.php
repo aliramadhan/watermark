@@ -66,15 +66,15 @@
             <div class="flex  space-x-8">
               <div class="flex flex-col space-y-2 justify-between">
                 <form method="POST" enctype="multipart/form-data" id="laravel-ajax-file-upload" action="javascript:void(0)">
-                  
-                <label class="font-semibold text-lg tracking-wide text-gray-700 pb-2">New Upload</label>
-                <img  class="img-preview h-32 w-52 object-contain mx-auto" />
-                <label class="w-max flex flex-col items-center px-4 py-2 bg-white  text-gray-600 rounded-lg  tracking-wide shadow-md uppercase border border-blue cursor-pointer hover:bg-blue-400 hover:text-white mt-1">                
-                  <span class=" text-base leading-normal "><i class="fas fa-file-import mr-2"></i> Select signature </span>             
-                  <input class="hidden" type="file" name="watermark" value="{{old('watermark')}}" id="image" onchange="previewImage()"/>
-                </label>
 
-                <button type="submit" class="shadow-md  justify-center w-full px-4 py-2 text-white bg-green-500 rounded-lg hover:bg-green-700 font-semibold tracking-wider imgButton" id="uploadSignature" >Upload Signature</button>
+                  <label class="font-semibold text-lg tracking-wide text-gray-700 pb-2">New Upload</label>
+                  <img  class="img-preview h-32 w-52 object-contain mx-auto" />
+                  <label class="w-max flex flex-col items-center px-4 py-2 bg-white  text-gray-600 rounded-lg  tracking-wide shadow-md uppercase border border-blue cursor-pointer hover:bg-blue-400 hover:text-white mt-1">                
+                    <span class=" text-base leading-normal "><i class="fas fa-file-import mr-2"></i> Select signature </span>             
+                    <input class="hidden" type="file" name="watermark" value="{{old('watermark')}}" id="image" onchange="previewImage()"/>
+                  </label>
+
+                  <button type="submit" class="shadow-md  justify-center w-full px-4 py-2 text-white bg-green-500 rounded-lg hover:bg-green-700 font-semibold tracking-wider imgButton" id="uploadSignature" >Upload Signature</button>
 
                 </form>
               </div>
@@ -208,12 +208,12 @@
     <div class="flex flex-col space-y-4 overflow-x-auto pr-5 w-100" style="height: 100%"  x-show="scope"  x-transition>
       <div id="divEmbed" class="w-100 flex flex-col space-y-4">
         @foreach($queue->details as $detail)
-          <div style="width:100%;">
-            <label> Halaman : {{$detail->page}} </label>
-            <embed id='embedPDF'  src='../{{$detail->file_path}}' width="100%" class="w-100" height="1200"  type='application/pdf'>
+        <div style="width:100%;">
+          <label> Halaman : {{$detail->page}} </label>
+          <embed id='embedPDF'  src='../{{$detail->file_path}}' width="100%" class="w-100" height="1200"  type='application/pdf'>
           </div>
-        @endforeach
-      </div>
+          @endforeach
+        </div>
       </div>
       <div x-show="!scope" class=" flex flex-row space-x-10 px-10">
         <canvas id="canvas" class="bg-white cursor-move  mt-12 shadow-lg" height="285" width="200" >             
@@ -298,20 +298,28 @@ canvas.addEventListener('mousedown', function(e) {
 })
 function previewImage(){
 
-  const image = document.querySelector('#image');
-  const imgPreview = document.querySelector('.img-preview');
-  const imgButton = document.querySelector('.imgButton');
+ const image = document.querySelector('#image');
+ const imgPreview = document.querySelector('.img-preview');
+ const imgButton = document.querySelector('.imgButton');
 
-  imgPreview.style.display = "block";
+ imgPreview.style.display = "block";
+ if (document.querySelector('.imgButton')) {
+  const imgButton = document.querySelector('.imgButton'); 
   imgButton.style.display = "none";
+}
 
-  const oFReader = new FileReader();
-  oFReader.readAsDataURL(image.files[0]);
+imgPreview.style.display = "block";
 
-  oFReader.onload =function(oFReader){
-   imgPreview.src = oFReader.target.result;  
+const oFReader = new FileReader();
+oFReader.readAsDataURL(image.files[0]);
+
+oFReader.onload =function(oFReader){
+ imgPreview.src = oFReader.target.result;  
+ imgButton.style.display = "block";
+ if (document.querySelector('.imgButton')) {
    imgButton.style.display = "block";
- }
+ }  
+}
 }
 
  // Loaded via <script> tag, create shortcut to access PDF.js exports.
@@ -365,79 +373,79 @@ $("#myPdf").on("change", function(e){
 
     </script>
     <script>
-    $("#selectSignature").click(function(){
-      var getURLSignature = $('input[name="signature"]:checked').val();
-      var html = "<img src='../"+getURLSignature+"' class='img-preview  w-52  object-contain mx-auto rounded-md' id='urlWatermark' /> <input type='hidden' id='getWatermark' value='"+getURLSignature+"'>";
-      $("#watermark").html(html);
-    });
-     jQuery(document).ready(function(){
-      jQuery('#edit').click(function(e){
-       e.preventDefault();
-       $.ajaxSetup({
-        headers: {
-          'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-        }
-       });
-       jQuery.ajax({
-        url: "{{ route('user.edit.watermark.pdf') }}",
-        method: 'post',
-        data: {
-          _token: "{{ csrf_token() }}",
-          pages: jQuery('#formPages').val(),
-          opacity: jQuery('#formOpacity').val(),
-          x: jQuery('#formX').val(),
-          y: jQuery('#formY').val(),
-          width: jQuery('#formWidht').val(),
-          height: jQuery('#formHeight').val(),
-          watermark: jQuery('#getWatermark').val(),
-        },
-        success: function(result){
-          console.log(result);
-          $("#divEmbed").html(result.embedPDF);
-        }});
+      $("#selectSignature").click(function(){
+        var getURLSignature = $('input[name="signature"]:checked').val();
+        var html = "<img src='../"+getURLSignature+"' class='img-preview  w-52  object-contain mx-auto rounded-md' id='urlWatermark' /> <input type='hidden' id='getWatermark' value='"+getURLSignature+"'>";
+        $("#watermark").html(html);
       });
-      jQuery('#reset').click(function(e){
-       e.preventDefault();
-       $.ajaxSetup({
-        headers: {
-          'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-        }
-      });
-       jQuery.ajax({
-        url: "{{ route('user.reset.watermark.pdf') }}",
-        method: 'post',
-        data: {
-          _token: "{{ csrf_token() }}",
-        },
-        success: function(result){
-          console.log(result);
-          $("#divEmbed").html(result.embedPDF);
-        }});
-      });
-      $('#laravel-ajax-file-upload').submit(function(e) {
-        e.preventDefault();
-        $.ajaxSetup({
+      jQuery(document).ready(function(){
+        jQuery('#edit').click(function(e){
+         e.preventDefault();
+         $.ajaxSetup({
           headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
           }
         });
-        var formData = new FormData(this);
-        $.ajax({
-          type:'POST',
-          url: "{{ route('user.upload.watermark')}}",
-          data: formData,
-          cache:false,
-          contentType: false,
-          processData: false,
-          success: (data) => {
-            alert('File has been uploaded successfully');
-            $("#listSignature").html(data.embedWatermark);
+         jQuery.ajax({
+          url: "{{ route('user.edit.watermark.pdf') }}",
+          method: 'post',
+          data: {
+            _token: "{{ csrf_token() }}",
+            pages: jQuery('#formPages').val(),
+            opacity: jQuery('#formOpacity').val(),
+            x: jQuery('#formX').val(),
+            y: jQuery('#formY').val(),
+            width: jQuery('#formWidht').val(),
+            height: jQuery('#formHeight').val(),
+            watermark: jQuery('#getWatermark').val(),
           },
-            error: function(data){
-            console.log(data);
+          success: function(result){
+            console.log(result);
+            $("#divEmbed").html(result.embedPDF);
+          }});
+       });
+        jQuery('#reset').click(function(e){
+         e.preventDefault();
+         $.ajaxSetup({
+          headers: {
+            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
           }
+        });
+         jQuery.ajax({
+          url: "{{ route('user.reset.watermark.pdf') }}",
+          method: 'post',
+          data: {
+            _token: "{{ csrf_token() }}",
+          },
+          success: function(result){
+            console.log(result);
+            $("#divEmbed").html(result.embedPDF);
+          }});
+       });
+        $('#laravel-ajax-file-upload').submit(function(e) {
+          e.preventDefault();
+          $.ajaxSetup({
+            headers: {
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+          });
+          var formData = new FormData(this);
+          $.ajax({
+            type:'POST',
+            url: "{{ route('user.upload.watermark')}}",
+            data: formData,
+            cache:false,
+            contentType: false,
+            processData: false,
+            success: (data) => {
+              alert('File has been uploaded successfully');
+              $("#listSignature").html(data.embedWatermark);
+            },
+            error: function(data){
+              console.log(data);
+            }
+          });
         });
       });
-    });
-  </script>
-</x-app-layout>
+    </script>
+  </x-app-layout>
