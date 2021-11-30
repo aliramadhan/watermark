@@ -60,7 +60,7 @@
         <div class="h-auto p-4 mx-2 text-left bg-white rounded shadow-xl md:max-w-5xl md:p-6 lg:p-8 md:mx-0" @click.away="signature = false">
           <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
             <h3 class="text-2xl font-semibold leading-6 text-gray-900 mb-4 border-b pb-2">
-              Change Signature
+              Select Signature
             </h3>
 
             <div class="flex  space-x-8">
@@ -97,7 +97,7 @@
           <div class="mt-5 sm:mt-6 border-t py-2 -mx-7 px-6 bg-gray-100 -mb-7">
             <span class="flex w-full rounded-md justify-end">
               <button id="selectSignature" @click="signature = false" class="shadow-md inline-flex justify-center w-max px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-700 font-semibold tracking-wider">
-                Save Signature
+                Select Signature
               </button>
             </span>
           </div>
@@ -114,11 +114,11 @@
 
         <div class="mb-4 flex flex-col bg-gray-100 rounded-lg px-2 pt-4 pb-2">
           <div id="watermark">
-           <img src="" class="img-preview  w-52  object-contain mx-auto rounded-md" id="urlWatermark" />
+           <img src="../{{$signature->last()->file_path}}" class="img-preview  w-52  object-contain mx-auto rounded-md" id="urlWatermark" />
            <input type="hidden" id="getWatermark">
          </div>        
          <div class="flex flex-row space-x-2 justify-center mt-2">
-           <button @click="signature = ! signature" class="bg-white rounded-lg hover:bg-blue-400 hover:text-white duration-300 py-1 tracking-wide text-gray-700 shadow  px-2 text-sm"><i class="fas fa-redo mr-1" ></i> Change Signature</button> 
+           <button @click="signature = ! signature" class="bg-white rounded-lg hover:bg-blue-400 hover:text-white duration-300 py-1 tracking-wide text-gray-700 shadow  px-2 text-sm"><i class="fas fa-redo mr-1" ></i> Select Signature</button> 
 
          </div>
        </div>    
@@ -153,7 +153,7 @@
         <div class="col-span-2 -mb-2 flex items-center justify-between font-semibold ">
           <label class=" text-gray-700 "><i class="fas fa-pencil-ruler mr-1.5"></i> Size
           </label>
-          <button x-on:click="setDefaultH = '{{$item->height}}', setDefaultW = '{{$item->width}}' " class="bg-white rounded-lg hover:bg-blue-400 hover:text-white duration-300 py-1 tracking-wide text-gray-700 shadow border px-2 text-sm"><i class="fas fa-share-square mr-1"></i> Use default</button> 
+          <button x-on:click="setDefaultH = '{{$item->height}}', setDefaultW = '{{$item->width}}'" class="bg-white rounded-lg hover:bg-blue-400 hover:text-white duration-300 py-1 tracking-wide text-gray-700 shadow border px-2 text-sm"><i class="fas fa-share-square mr-1" id="useDefault"></i> Use default</button> 
         </div>
 
         <div>
