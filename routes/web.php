@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UploadController;
+use App\Http\Livewire\PDFSignature;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,4 +36,5 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'user', 'as' => 'use
 
 	#upload Watermark
 	Route::post('upload-watermark', [UploadController::class, 'uploadWatermark'])->name('upload.watermark');
+	Route::get('pdf-signature', PDFSignature::class)->name('pdf.signature');
 });

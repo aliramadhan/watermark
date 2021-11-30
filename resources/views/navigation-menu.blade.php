@@ -18,6 +18,9 @@
                     <x-jet-nav-link k href="{{ route('user.index.upload2') }}" :active="request()->routeIs('user.index.upload2')">
                         {{ __('Upload') }}
                     </x-jet-nav-link>
+                    <x-jet-nav-link k href="{{ route('user.pdf.signature') }}" :active="request()->routeIs('user.pdf.signature')">
+                        {{ __('Upload (on going replace)') }}
+                    </x-jet-nav-link>
                    
                 </div>
             </div>
