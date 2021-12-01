@@ -114,11 +114,11 @@
 
         <div class="mb-4 flex flex-col bg-gray-100 rounded-lg px-2 pt-4 pb-2">
           <div id="watermark">
-           <img src="../{{$signature->last()->file_path}}" class="img-preview  w-52  object-contain mx-auto rounded-md" id="urlWatermark" />
-           <input type="hidden" id="getWatermark">
+           <img src="../{{$watermark->file_path}}" class="img-preview  w-52  object-contain mx-auto rounded-md" id="urlWatermark" />
+           <input type="hidden" id="getWatermark" value="{{$watermark->file_path}}">
          </div>        
          <div class="flex flex-row space-x-2 justify-center mt-2">
-           <button @click="signature = ! signature" class="bg-white rounded-lg hover:bg-blue-400 hover:text-white duration-300 py-1 tracking-wide text-gray-700 shadow  px-2 text-sm"><i class="fas fa-redo mr-1" ></i> Select Signature</button> 
+           <button @click="signature = ! signature" class="bg-white rounded-lg hover:bg-blue-400 hover:text-white duration-300 py-1 tracking-wide text-gray-700 shadow  px-2 text-sm"><i class="fas fa-redo mr-1" ></i> Change Signature</button> 
 
          </div>
        </div>    
@@ -153,7 +153,7 @@
         <div class="col-span-2 -mb-2 flex items-center justify-between font-semibold ">
           <label class=" text-gray-700 "><i class="fas fa-pencil-ruler mr-1.5"></i> Size
           </label>
-          <button x-on:click="setDefaultH = '{{$item->height}}', setDefaultW = '{{$item->width}}'" class="bg-white rounded-lg hover:bg-blue-400 hover:text-white duration-300 py-1 tracking-wide text-gray-700 shadow border px-2 text-sm"><i class="fas fa-share-square mr-1" id="useDefault"></i> Use default</button> 
+          <button x-on:click="setDefaultH = '{{$watermark->height}}', setDefaultW = '{{$watermark->width}}'" class="bg-white rounded-lg hover:bg-blue-400 hover:text-white duration-300 py-1 tracking-wide text-gray-700 shadow border px-2 text-sm"><i class="fas fa-share-square mr-1" id="useDefault"></i> Use default</button> 
         </div>
 
         <div>
@@ -377,15 +377,18 @@ $("#myPdf").on("change", function(e){
         var getURLSignature = $('input[name="signature"]:checked').val();
         var html = "<img src='../"+getURLSignature+"' class='img-preview  w-52  object-contain mx-auto rounded-md' id='urlWatermark' /> <input type='hidden' id='getWatermark' value='"+getURLSignature+"'>";
         $("#watermark").html(html);
+        Livewire.emit('setWatermark',getURLSignature);
       });
       jQuery(document).ready(function(){
         jQuery('#edit').click(function(e){
          e.preventDefault();
+         var getURLSignature = $('input[name="signature"]:checked').val();
+         console.log(getURLSignature);
          $.ajaxSetup({
           headers: {
             'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
           }
-        });
+         });
          jQuery.ajax({
           url: "{{ route('user.edit.watermark.pdf') }}",
           method: 'post',
@@ -397,7 +400,7 @@ $("#myPdf").on("change", function(e){
             y: jQuery('#formY').val(),
             width: jQuery('#formWidht').val(),
             height: jQuery('#formHeight').val(),
-            watermark: jQuery('#getWatermark').val(),
+            watermark: getURLSignature,
           },
           success: function(result){
             console.log(result);
@@ -416,6 +419,7 @@ $("#myPdf").on("change", function(e){
           method: 'post',
           data: {
             _token: "{{ csrf_token() }}",
+            queue_id: "{!! $queue->id !!}",
           },
           success: function(result){
             console.log(result);

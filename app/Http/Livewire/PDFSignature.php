@@ -15,6 +15,11 @@ class PDFSignature extends Component
 {
 	public  $user, $queue, $signature, $watermark;
 
+	protected $listeners = [
+		'setWatermark' => 'setWatermark',
+		'refreshComponent' => '$refresh',
+	];
+
     public function render()
     {
     	$this->user = auth()->user();
@@ -28,6 +33,10 @@ class PDFSignature extends Component
     public function mount()
     {
     	$this->watermark = WatermarkList::where('user_id',auth()->user()->id)->orderBy('id', 'DESC')->first();
+    }
+    public function setWatermark($file_path)
+    {
+    	$this->watermark = WatermarkList::where('file_path',$file_path)->first();
     }
     public function formatBytes($size, $precision = 2)
     {

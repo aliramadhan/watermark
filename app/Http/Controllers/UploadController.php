@@ -224,29 +224,34 @@ class UploadController extends Controller
     {
         $mpdf = new Mpdf();
         $user = auth()->user();
-        $queue = QueueSignature::where('user_id',$user->id)->first();
-        $pagecount = $mpdf->setSourceFile('temp/pdf_'.$user->id.'.pdf');
+        $queue = QueueSignature::find($request->queue_id);
+        $pagecount = $mpdf->setSourceFile($queue->file_path);
 
         //applied from uploaded file
-        for ($i=1; $i<=$pagecount; $i++) {
-            /*
-            $import_page = $mpdf->ImportPage($i);
-            $mpdf->UseTemplate($import_page);
-            if ($i < $pagecount)
-                $mpdf->AddPage();
-                */
+        #convert per page to new pdf file
+        $embedPDF = "";
+        foreach ($queue->details as $detail) {
             $new_mpdf = new Mpdf();
-            $new_mpdf->setSourceFile('temp/pdf_'.$user->id.'.pdf');
-            $import_page = $new_mpdf->ImportPage($i);
+            $new_mpdf->setSourceFile($queue->file_path);
+            $import_page = $new_mpdf->ImportPage($detail->page);
             $new_mpdf->UseTemplate($import_page);
-            $new_mpdf->Output('temp/detail_pdf_'.$i.'.pdf','F');
+            $new_mpdf->Output('temp/details/detail_'.$queue->id.'_'.$detail->page.'.pdf','F');
+            $detail_queue = DetailQueue::updateOrCreate([
+                'queue_signature_id' => $queue->id,
+                'page' => $detail->page,
+            ],[
+                'file_path' => 'temp/details/detail_'.$queue->id.'_'.$detail->page.'.pdf',
+                'x' => 0,
+                'y' => 0,
+                'width' => 0,
+                'height' => 0,
+                'opacity' => 0,
+                'is_watermarked' => false,
+            ]);
+            $embedPDF .= "<embed id='embedPDF' src='../".$detail->file_path."' width='100%' height='1200' type='application/pdf'>";
         }
         //$mpdf->Output('temp/output_pdf'.auth()->user()->id.'.pdf','F');
         //$embedPDF = "<embed id='embedPDF' src='../temp/output_pdf".auth()->user()->id.".pdf' width='100%' height='600px' type='application/pdf'>";
-        $embedPDF = "";
-        foreach ($queue->details as $detail) {
-            $embedPDF .= "<embed id='embedPDF' src='../".$detail->file_path."' width='100%' height='1200' type='application/pdf'>";
-        }
         return response()->json(['embedPDF'=> $embedPDF]);
     }
     public function deleteQueueSignature(QueueSignature $queue)
