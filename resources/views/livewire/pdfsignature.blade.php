@@ -252,7 +252,7 @@
   </div>
 </div>
 
-
+@if($queue != null)
 <script src="http://code.jquery.com/jquery-3.3.1.min.js"
 integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
 crossorigin="anonymous">
@@ -322,12 +322,12 @@ oFReader.onload =function(oFReader){
 }
 }
 
- // Loaded via <script> tag, create shortcut to access PDF.js exports.
- var pdfjsLib = window['pdfjs-dist/build/pdf'];
-// The workerSrc property shall be specified.
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://mozilla.github.io/pdf.js/build/pdf.worker.js';
+  // Loaded via <script> tag, create shortcut to access PDF.js exports.
+  var pdfjsLib = window['pdfjs-dist/build/pdf'];
+  // The workerSrc property shall be specified.
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://mozilla.github.io/pdf.js/build/pdf.worker.js';
 
-$("#myPdf").on("change", function(e){
+  $("#myPdf").on("change", function(e){
   var file = e.target.files[0]
   if(file.type == "application/pdf"){
     var fileReader = new FileReader();  
@@ -370,8 +370,7 @@ $("#myPdf").on("change", function(e){
           fileReader.readAsArrayBuffer(file);
         }
       });
-
-    </script>
+</script>
     <script>
       $("#selectSignature").click(function(){
         var getURLSignature = $('input[name="signature"]:checked').val();
@@ -452,4 +451,5 @@ $("#myPdf").on("change", function(e){
         });
       });
     </script>
+    @endif
 </div>
