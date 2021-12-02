@@ -72,6 +72,16 @@
             showConfirmButton: false,
           });
           @endif
+          @if(Session::has('info'))
+          Swal.fire({
+            titleText: "{{ session('info') }}",
+            icon: 'info',
+            position: 'center', 
+            timer: 3000,
+            toast: false,
+            showConfirmButton: false,
+          });
+          @endif
           @if($errors->any())
           Swal.fire({
             titleText: "{{ implode('', $errors->all(':message')) }}",

@@ -37,4 +37,10 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'user', 'as' => 'use
 	#upload Watermark
 	Route::post('upload-watermark', [UploadController::class, 'uploadWatermark'])->name('upload.watermark');
 	Route::get('pdf-signature', PDFSignature::class)->name('pdf.signature');
+
+	#Manage Watermark
+	Route::get('watermark', [UploadController::class, 'indexWatermark'])->name('index.watermark');
+	Route::delete('watermark/{watermark}/delete', [UploadController::class, 'deleteWatermark'])->name('delete.watermark');
+	#Manage PDF
+	Route::get('pdf', [UploadController::class, 'indexPDF'])->name('index.pdf');
 });

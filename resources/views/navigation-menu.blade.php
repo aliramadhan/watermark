@@ -21,6 +21,9 @@
                     <x-jet-nav-link k href="{{ route('user.pdf.signature') }}" :active="request()->routeIs('user.pdf.signature')">
                         {{ __('Upload (on going replace)') }}
                     </x-jet-nav-link>
+                    <x-jet-nav-link k href="{{ route('user.index.watermark') }}" :active="request()->routeIs('user.index.watermark')">
+                        {{ __('List Watermark') }}
+                    </x-jet-nav-link>
                    
                 </div>
             </div>
