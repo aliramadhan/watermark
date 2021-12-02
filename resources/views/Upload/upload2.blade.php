@@ -85,7 +85,7 @@
                 <div class="grid grid-cols-4 gap-4 bg-gray-100 rounded-lg p-5 h-72 overflow-y-auto" id="listSignature">
                   @foreach($signature as $item)
                   <label class="inline-flex bg-cover  bg-no-repeat w-32 h-28 hover:bg-blue-500" style="background-image: url('../{{$item->file_path}}');"> 
-                    <input type="checkbox" class="duration-300 w-full h-full opacity-30" name="signature" value="{{$item->file_path}}" />
+                    <input type="checkbox" class="duration-300 w-full h-full opacity-30" name="signature[0][]" value="{{$item->file_path}}" />
                   </label>
                   @endforeach
                 </div>
@@ -125,7 +125,7 @@
        <div class="mb-4 grid grid-cols-2 gap-4">
          <div class="col-span-2 -mb-2 flex items-center justify-between font-semibold ">
           <label class="text-gray-600"><i class="fas fa-file-alt mr-1.5"></i> Select Page </label>
-          <button @click="scope = ! scope" class="bg-white rounded-lg hover:bg-blue-400 hover:text-white duration-300 py-1 tracking-wide text-gray-700 shadow border px-2 text-sm"><i class="fas fa-search-plus mr-1" ></i> Set Here</button>     
+         
         </div>             
         <input type="text" name="pages" placeholder="1, 2, 3, 4 .. - 100" class="col-span-2 bg-gray-100 hover:border-indigo-400 duration-300 rounded-lg border-gray-200 py-1.5 px-3.5 mt-1"  id="formPages" value="{{old('pages')}}">  
       </div>       
@@ -138,7 +138,7 @@
         <div class="col-span-2 -mb-2 flex items-center justify-between font-semibold ">
           <label class=" text-gray-700 "><i class="fas fa-ruler-combined mr-1.5"></i>Coordinate
           </label>
-          <button @click="scope = ! scope" class="bg-white rounded-lg hover:bg-blue-400 hover:text-white duration-300 py-1 tracking-wide text-gray-700 shadow border px-2 text-sm"><i class="fas fa-search-plus mr-1" ></i> Set Here</button> 
+          <button @click="scope = ! scope" class="bg-white rounded-lg hover:bg-blue-400 hover:text-white duration-300 py-1 tracking-wide text-gray-700 shadow border px-2 text-sm"  x-html="scope ? ' <i class=`fas fa-search-plus mr-1` ></i> Set Here': 'Back'"> </button> 
         </div>
         <div >
           <label class="text-gray-500">Horizontal</label>
@@ -204,8 +204,8 @@
 
 
   </div>
-  <div class="overflow-y-auto" style="height: 800px">
-    <div class="flex flex-col space-y-4 overflow-x-auto pr-5 w-100" style="height: 100%"  x-show="scope"  x-transition>
+  <div class="overflow-y-auto flex items-center" style="height: 800px">
+    <div class="flex-auto flex flex-col space-y-4 overflow-x-auto pr-5 w-100" style="height: 100%"  x-show="scope"  x-transition>
       <div id="divEmbed" class="w-100 flex flex-col space-y-4">
         @foreach($queue->details as $detail)
         <div style="width:100%;">
@@ -215,8 +215,8 @@
           @endforeach
         </div>
       </div>
-      <div x-show="!scope" class=" flex flex-row space-x-10 px-10">
-        <canvas id="canvas" class="bg-white cursor-move  mt-12 shadow-lg" height="285" width="200" >             
+      <div x-show="!scope" x-transition class=" flex flex-row space-x-10 px-10">
+        <canvas id="canvas" class="bg-white  hover:shadow-xl duration-300  mt-12 shadow-lg" height="285" width="200" >             
         </canvas> 
         <i class="fas fa-arrow-left text-6xl my-auto animate-pulse text-yellow-400"></i>
         <div class="my-auto">
@@ -286,6 +286,10 @@ $("input:checkbox").on('click', function() {
   const y = event.clientY - rect.top
   console.log("x: " + x + " y: " + y)
   var coords = "X coords: " + x + ", Y coords: " + y;
+  var ctx = canvas.getContext("2d");
+  ctx.clearRect(0,0,200,285)
+  ctx.fillRect(x,y,10,10);
+
   document.getElementById("demo").innerHTML = coords;
   document.getElementById("formX").value = x;
   document.getElementById("formY").value = y;
