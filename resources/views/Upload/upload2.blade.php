@@ -206,6 +206,7 @@
   </div>
   <div class="overflow-y-auto flex items-center" style="height: 800px">
     <div class="flex-auto flex flex-col space-y-4 overflow-x-auto pr-5 w-100" style="height: 100%"  x-show="scope"  x-transition>
+      <div id="loading" class="hidden">Loading</div>
       <div id="divEmbed" class="w-100 flex flex-col space-y-4">
         @foreach($queue->details as $detail)
         <div style="width:100%;">
@@ -400,6 +401,8 @@ $("#myPdf").on("change", function(e){
             width: jQuery('#formWidht').val(),
             height: jQuery('#formHeight').val(),
             watermark: jQuery('#getWatermark').val(),
+            beforeSend: function() { $('#loading').show(); },
+            complete: function() { $('#loading').hide(); }
           },
           success: function(result){
             console.log(result);

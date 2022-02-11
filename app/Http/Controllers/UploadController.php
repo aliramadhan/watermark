@@ -216,7 +216,7 @@ class UploadController extends Controller
         //$mpdf->Output('temp/output_pdf'.auth()->user()->id.'.pdf','F');
         $embedPDF = "";
         foreach ($queue->details as $detail) {
-            $embedPDF .= "<div style='width:100%;''><label> Halaman : ".$detail->page." </label> <embed id='embedPDF' src='../".$detail->file_path."' width='100%' class='w-100 h-screen' type='application/pdf'></div";
+            $embedPDF .= "<div style='width:100%;''><label> Halaman : ".$detail->page." </label> <embed id='embedPDF' src='../".$detail->file_path."' width='100%' class='w-100' height='1200' type='application/pdf'></div";
         }
         return response()->json(['embedPDF'=> $embedPDF, 'result' => $request->all()]);
     }
