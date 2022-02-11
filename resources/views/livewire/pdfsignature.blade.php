@@ -85,7 +85,7 @@
                 <div class="grid grid-cols-4 gap-4 bg-gray-100 rounded-lg p-5 h-72 overflow-y-auto" id="listSignature">
                   @foreach($signature as $item)
                   <label class="inline-flex bg-cover  bg-no-repeat w-32 h-28 hover:bg-blue-500" style="background-image: url('../{{$item->file_path}}');"> 
-                    <input type="checkbox" class="duration-300 w-full h-full opacity-30" name="signature" value="{{$item->file_path}}" />
+                    <input type="checkbox" class="duration-300 w-full h-full opacity-30" name="signature[]" value="{{$item->file_path}}" />
                   </label>
                   @endforeach
                 </div>
@@ -252,7 +252,7 @@
   </div>
 </div>
 
-@if($queue != null)
+
 <script src="http://code.jquery.com/jquery-3.3.1.min.js"
 integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
 crossorigin="anonymous">
@@ -371,9 +371,10 @@ oFReader.onload =function(oFReader){
         }
       });
 </script>
+@if($queue != null)
     <script>
       $("#selectSignature").click(function(){
-        var getURLSignature = $('input[name="signature"]:checked').val();
+        var getURLSignature = $('input[name="signature[]"]:checked').val();
         var html = "<img src='../"+getURLSignature+"' class='img-preview  w-52  object-contain mx-auto rounded-md' id='urlWatermark' /> <input type='hidden' id='getWatermark' value='"+getURLSignature+"'>";
         $("#watermark").html(html);
         Livewire.emit('setWatermark',getURLSignature);
@@ -381,8 +382,7 @@ oFReader.onload =function(oFReader){
       jQuery(document).ready(function(){
         jQuery('#edit').click(function(e){
          e.preventDefault();
-         var getURLSignature = $('input[name="signature"]:checked').val();
-         console.log(getURLSignature);
+         var getURLSignature = $('#getWatermark').val();
          $.ajaxSetup({
           headers: {
             'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
@@ -402,7 +402,6 @@ oFReader.onload =function(oFReader){
             watermark: getURLSignature,
           },
           success: function(result){
-            console.log(result);
             $("#divEmbed").html(result.embedPDF);
           }});
        });
@@ -421,7 +420,6 @@ oFReader.onload =function(oFReader){
             queue_id: "{!! $queue->id !!}",
           },
           success: function(result){
-            console.log(result);
             $("#divEmbed").html(result.embedPDF);
           }});
        });

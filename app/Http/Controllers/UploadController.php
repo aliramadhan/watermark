@@ -155,7 +155,7 @@ class UploadController extends Controller
         $embedWatermark = "";
         foreach ($watermarks as $item) {
             $embedWatermark .= "<label class='inline-flex bg-cover  bg-no-repeat w-32 h-28 hover:bg-blue-500' style='background-image: url(../".$item->file_path.");'> 
-                    <input type='checkbox' class='duration-300 w-full h-full opacity-30' name='signature' value='".$item->file_path."' />
+                    <input type='checkbox' class='duration-300 w-full h-full opacity-30' name='signature[]' value='".$item->file_path."' />
                   </label>";
         }
         return response()->json([
@@ -298,5 +298,21 @@ class UploadController extends Controller
         $suffixes = array('', 'K', 'M', 'G', 'T');   
 
         return round(pow(1024, $base - floor($base)), $precision) .' '. $suffixes[floor($base)];
+    }
+    public function indexWatermark()
+    {
+        $user = auth()->user();
+        $watermarks = WatermarkList::where('user_id',$user->id)->get();
+        return view('Upload.list_watermark',compact('user','watermarks'));
+    }
+    public function deleteWatermark(WatermarkList $watermark)
+    {
+        if (file_exists(public_path($watermark->file_path))) {
+            unlink($watermark->file_path);
+            $watermark->delete();
+
+            return redirect()->back()->with(['success' => 'Watermark berhasil dihapus.']);
+        }
+        return redirect()->back()->with(['info' => 'Watermark tidak ditemukan.']);
     }
 }
